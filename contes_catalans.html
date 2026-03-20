@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contes Catalans · Bona Nit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0a1a;
+    --surface: #16112b;
+    --surface2: #1e1738;
+    --surface3: #261e45;
+    --gold: #e8b84b;
+    --gold-light: #f5d07a;
+    --gold-dim: #a07c2a;
+    --text: #f0e8d8;
+    --text-dim: #b8a88a;
+    --text-muted: #7a6a5a;
+    --star: #fff8e7;
+    --accent: #c46b3a;
+    --accent2: #7b5ea7;
+    --radius: 16px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── Stars background ─── */
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(1px 1px at 10% 15%, #fff9 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, #fff7 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 8%, #fffb 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 30%, #fff8 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 18%, #fff6 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 80% 45%, #fffa 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 10%, #fff9 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 70%, #fff5 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 85%, #fff6 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 60% 65%, #fff8 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 78%, #fff7 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 60%, #fff9 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 50%, #fff6 0%, transparent 100%),
+      radial-gradient(1px 1px at 48% 55%, #fff4 0%, transparent 100%),
+      radial-gradient(2px 2px at 20% 25%, #ffe8886a 0%, transparent 100%);
+  }
+
+  /* ─── Header ─── */
+  header {
+    position: relative; z-index: 10;
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    background: linear-gradient(180deg, #0d0a1a 0%, transparent 100%);
+  }
+
+  .moon {
+    font-size: 3.5rem;
+    display: block;
+    animation: moonFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px #e8b84b88);
+  }
+  @keyframes moonFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 0 0 40px #e8b84b55;
+    margin: 0.5rem 0 0.3rem;
+    letter-spacing: -0.5px;
+  }
+  header p {
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  /* ─── Main layout ─── */
+  .app { position: relative; z-index: 5; max-width: 1100px; margin: 0 auto; padding: 0 1.2rem 4rem; }
+
+  /* ─── Search ─── */
+  .search-wrap {
+    margin: 1.5rem 0 1.2rem;
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--surface3);
+    border-radius: 50px;
+    padding: 0.9rem 1.5rem 0.9rem 3rem;
+    color: var(--text);
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .search-wrap input::placeholder { color: var(--text-muted); }
+  .search-wrap input:focus {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 0 3px #e8b84b22;
+  }
+  .search-wrap .icon {
+    position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 1.1rem; pointer-events: none;
+  }
+
+  /* ─── Category pills ─── */
+  .cats {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;
+  }
+  .cat-pill {
+    background: var(--surface);
+    border: 1.5px solid var(--surface3);
+    color: var(--text-dim);
+    border-radius: 50px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all .18s;
+    font-family: 'Lora', serif;
+  }
+  .cat-pill:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+  .cat-pill.active {
+    background: linear-gradient(135deg, #a07c2a, #e8b84b);
+    border-color: var(--gold);
+    color: #1a1200;
+    font-weight: 600;
+  }
+
+  /* ─── Stats bar ─── */
+  .stats { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1rem; }
+
+  /* ─── Grid ─── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--surface3);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.3rem;
+    cursor: pointer;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #e8b84b06, transparent);
+    opacity: 0; transition: opacity .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--gold-dim); box-shadow: 0 8px 30px #00000060; }
+  .card:hover::before { opacity: 1; }
+
+  .card-emoji { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--gold-light);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+  }
+  .card-meta {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;
+  }
+  .badge {
+    font-size: 0.7rem;
+    background: var(--surface2);
+    border: 1px solid var(--surface3);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+  }
+  .badge.theme { color: var(--accent2); border-color: #7b5ea733; background: #7b5ea710; }
+  .card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; font-style: italic; }
+
+  /* ─── READER MODAL ─── */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 100;
+    background: #00000099;
+    backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+    padding: 1rem;
+    animation: fadeIn .25s;
+  }
+  .overlay.open { display: flex; }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+  .modal {
+    background: linear-gradient(160deg, #16112b, #0d0a1a);
+    border: 1px solid var(--surface3);
+    border-radius: 20px;
+    max-width: 720px; width: 100%;
+    max-height: 92vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 25px 80px #000000cc;
+    animation: slideUp .3s cubic-bezier(.22,.61,.36,1);
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity:0 } }
+
+  .modal-head {
+    padding: 1.5rem 1.8rem 1rem;
+    border-bottom: 1px solid var(--surface3);
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  }
+  .modal-title-wrap .modal-emoji { font-size: 2.5rem; }
+  .modal-title-wrap h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    color: var(--gold-light);
+    margin: 0.2rem 0 0.4rem;
+  }
+  .modal-head .badges { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .btn-close {
+    background: var(--surface2);
+    border: 1px solid var(--surface3);
+    color: var(--text-dim);
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all .15s;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-close:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ─── Audio controls ─── */
+  .audio-bar {
+    padding: 0.8rem 1.8rem;
+    background: var(--surface2);
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .audio-btn {
+    background: linear-gradient(135deg, #a07c2a, #e8b84b);
+    border: none;
+    color: #1a1200;
+    border-radius: 50px;
+    padding: 0.5rem 1.3rem;
+    font-family: 'Lora', serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: opacity .15s, transform .15s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .audio-btn:hover { opacity: 0.88; transform: scale(1.03); }
+  .audio-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .speed-label { color: var(--text-muted); font-size: 0.8rem; }
+  .speed-select {
+    background: var(--surface3);
+    border: 1px solid #ffffff22;
+    color: var(--text-dim);
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .progress-wrap { flex: 1; min-width: 120px; }
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    border-radius: 4px;
+    width: 0%;
+    transition: width .5s linear;
+  }
+
+  /* ─── Story body ─── */
+  .modal-body {
+    padding: 1.5rem 1.8rem 2rem;
+    overflow-y: auto;
+    flex: 1;
+    scroll-behavior: smooth;
+  }
+  .modal-body::-webkit-scrollbar { width: 6px; }
+  .modal-body::-webkit-scrollbar-track { background: transparent; }
+  .modal-body::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+  .story-text {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--text);
+  }
+  .story-text p { margin-bottom: 1.1em; }
+  .story-text p:first-child::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2em;
+    float: left;
+    line-height: 0.8;
+    margin: 0.05em 0.1em 0 0;
+    color: var(--gold);
+    text-shadow: 0 0 20px #e8b84b55;
+  }
+  .reading-word { background: #e8b84b33; border-radius: 3px; transition: background .1s; }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 1.1rem;
+  }
+  .no-results .big { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+  @media (max-width: 600px) {
+    .modal-head { padding: 1rem; }
+    .modal-body { padding: 1rem; }
+    .audio-bar { padding: 0.6rem 1rem; }
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 400px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<header>
+  <span class="moon">🌙</span>
+  <h1>Contes Catalans</h1>
+  <p>Històries de la tradició per a somiar amb els més petits</p>
+</header>
+
+<div class="app">
+  <div class="search-wrap">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Busca un conte pel títol, personatge o paraula clau…">
+  </div>
+
+  <div class="cats" id="catBar"></div>
+  <div class="stats" id="stats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- Reader modal -->
+<div class="overlay" id="overlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div class="modal-title-wrap">
+        <div class="modal-emoji" id="mEmoji"></div>
+        <h2 id="mTitle"></h2>
+        <div class="badges" id="mBadges"></div>
+      </div>
+      <button class="btn-close" id="btnClose" aria-label="Tancar">✕</button>
+    </div>
+    <div class="audio-bar">
+      <button class="audio-btn" id="btnPlay">▶ Escoltar</button>
+      <button class="audio-btn" id="btnStop" style="background:var(--surface3);color:var(--text-dim);">■ Parar</button>
+      <span class="speed-label">Velocitat:</span>
+      <select class="speed-select" id="speedSel">
+        <option value="0.75">Lenta</option>
+        <option value="0.9" selected>Normal</option>
+        <option value="1.1">Ràpida</option>
+      </select>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="story-text" id="storyText"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA: 100+ contes tradicionals catalans
+// ═══════════════════════════════════════════════════════
+const contes = [
+  {
+    id:1, emoji:'🐺', title:'En Patufet',
+    tema:'Aventura', tags:['nen petit','salsitxa','bou'],
+    resum:'El noi més petit del món que cap a la panxa d\'una vaca.',
+    text:`<p>En Patufet era un nen tan petit, tan petit, que cabia dins d'una closca de cargol. La seva mare sempre li deia: «Patufet, fill meu, no vagis mai al mercat tot sol, que et pot passar alguna desgràcia.» Però en Patufet era molt valent i volia ajudar la família.</p>
+<p>Un dia la mare va preparar una cistella de salsitxes per vendre, i en Patufet va demanar de portar-les. La mare, tot i els seus neguits, va acceptar. El nen va caminar tantes hores que quan va arribar al mercat ja era ben tard.</p>
+<p>De tornada, va trobar un bou enorme enmig del camí. «Bou, bou, deixa'm passar!» va cridar. El bou, sense voler, el va engolit d'una llambregada. Allà dins fosca i calentor hi havia en Patufet, que cridava: «Mare, mare, sóc aquí dins!»</p>
+<p>La mare, desesperada, buscava el fill per tot el poble. Quan va sentir aquella veueta sortir de la panxa del bou, va córrer a buscar el pastor. Entre tots van fer sortir en Patufet san i estalvi.</p>
+<p>Des d'aleshores, la mare sempre l'acompanyava al mercat, i en Patufet mai més va anar sol pels camins. I van viure molts anys contents i feliços.</p>`
+  },
+  {
+    id:2, emoji:'🐺', title:'La Caputxeta Vermella',
+    tema:'Aventura', tags:['llop','bosc','àvia'],
+    resum:'La nena del barret vermell que porta pastissos a l\'àvia i es troba el llop.',
+    text:`<p>Hi havia una vegada una nena que tothom anomenava la Caputxeta Vermella perquè sempre portava una capa vermella amb caputxa que li havia fet la seva àvia. Un dia, la mare li va preparar una cistella amb pastissos i pa de sègol. «Porta-ho a l'àvia que viu al bosc, però no t'aturis a jugar.»</p>
+<p>La Caputxeta va entrar al bosc cantant. Aviat va topar amb el llop. «On vas, nena?» «A casa l'àvia!» El llop va córrer per un drecera mentre la Caputxeta s'entretenia collint flors.</p>
+<p>El llop va arribar primer a casa l'àvia, la va tancar a l'armari i es va posar al llit disfressat. Quan va arribar la Caputxeta va trobar estranyes les orelles, els ulls i les dents tan grosses que tenia "l'àvia"... fins que el llop va saltar per menjar-se-la!</p>
+<p>Per sort, un llenyataire que passava va sentir els crits. Va entrar corrents, va fer fugir el llop i va alliberar l'àvia de l'armari. La Caputxeta, abraçada a la seva àvia, va prometre escoltar sempre la seva mare.</p>`
+  },
+  {
+    id:3, emoji:'🏠', title:'Els Tres Porquets',
+    tema:'Aventura', tags:['llop','cases','palla fusta maons'],
+    resum:'Tres germans construeixen les seves cases i el llop intenta enderrocar-les.',
+    text:`<p>Tres porquets germans van decidir marxar de casa els seus pares per construir les seves pròpies llars. El primer, molt mandrós, va fer la seva casa de palla en un matí. El segon va tardar un dia a fer-la de fusta. El tercer, el més treballador, va trigar una setmana a construir una sòlida casa de maons.</p>
+<p>Al cap de poc va arribar el llop, famolenc i astut. S'acostà a la casa de palla: «Buffaré i buffaré i la casa t'ensorraré!» I amb un gran buf se la va endur. El primer porquet va fugir a casa del seu germà.</p>
+<p>El llop va arribar a la casa de fusta i va fer el mateix. I amb dos bufs va fer caure aquella casa també. Els dos porquets van fugir a casa del germà petit, la casa de maons.</p>
+<p>El llop va bufar i bufar fins a quedar-se sense alè, però la casa de maons ni es va moure. Enfadat, va intentar baixar per la xemeneia. Però els tres porquets havien preparat una olla d'aigua bullint a sota. El llop va sortir corrent i no va tornar mai més.</p>
+<p>Els tres germans van aprendre que val més fer les coses bé que de pressa.</p>`
+  },
+  {
+    id:4, emoji:'🐢', title:'La Llebre i la Tortuga',
+    tema:'Valors', tags:['carrera','perseverança','vanitat'],
+    resum:'Una cursa entre la llebre presumida i la tortuga constant.',
+    text:`<p>La Llebre era l'animal més ràpid del bosc i tothom ho sabia, però ella s'encarregava de recordar-ho a cada moment. Un dia, la Tortuga, cansada de les fanfarroneries, la va reptar a una cursa fins al roure vell de la muntanya.</p>
+<p>Tots els animals del bosc van aplaudir quan es va donar la sortida. La Llebre va arrencar com un llamp i al cap d'uns minuts ja era a mig camí, mentre la Tortuga avançava a passets petits però sense parar.</p>
+<p>«Quina pressa me corre?» es va dir la Llebre, i va decidir descansar a l'ombra d'un arbre. L'aire fresc i l'herba tova la van adormir de seguida. Va roncar i va roncar mentre el sol pujava i baixava pel cel.</p>
+<p>Mentrestant, la Tortuga, pas a pas, no s'aturava mai. Va passar per al costat de la Llebre dormida sense fer soroll i va continuar pujant la muntanya. Quan la Llebre es va despertar sobresaltada, va córrer amb totes les seves forces, però era massa tard: la Tortuga ja tocava el roure vell amb una pota.</p>
+<p>Des d'aleshores, ningú al bosc no es fia de la velocitat sense constància.</p>`
+  },
+  {
+    id:5, emoji:'🌹', title:'La Bella Dorment',
+    tema:'Màgia', tags:['princesa','bruixa','son','príncep'],
+    resum:'Una princesa que dorm cent anys fins que un petó la desperta.',
+    text:`<p>Quan va néixer la princesa Aurora, el rei i la reina van convidar totes les fades del regne. Però van oblidar la fada vella del bosc fosc, que va aparèixer furiosa i va llançar un malefici: «La princesa es punxarà el dit amb un fus i dormirà cent anys!»</p>
+<p>Una fada bona va suavitzar el malefici: dormiria, sí, però un petó d'amor verdader la despertaria. El rei va manar cremar tots els fusos del regne, però el dia del setze aniversari de la princesa, ella va trobar una sala secreta amb una vella filadora i... es va punxar el dit.</p>
+<p>Tot el castell va caure en un son profund. Al voltant van créixer matolls i bardisses tan espesses que semblaven una muralla verda. Cent anys van passar.</p>
+<p>Un jove príncep que havia sentit llegir la llegenda va arriscar-se a entrar al bosc encantat. Les bardisses li van obrir camí, com si l'esperessin. Va trobar el castell silenciós, va pujar les escales i va arribar a la cambra de la princesa. Li va donar un petó suau i Aurora va obrir els ulls.</p>
+<p>Tot el castell es va despertar alhora: cuiners, cavallers, gossos i ocells. I la princesa i el príncep van viure feliços molts anys.</p>`
+  },
+  {
+    id:6, emoji:'👠', title:'La Ventafocs',
+    tema:'Màgia', tags:['ball','sabata','fada','príncep'],
+    resum:'Una noia bondadosa que amb ajuda de la fada va al ball del príncep.',
+    text:`<p>La Ventafocs vivia amb la seva madrastra i dues germanastres que la feien fer tota la feina de la casa. Quan van arribar les invitacions al gran ball del palau, les germanastres s'hi van preparar durant dies, mentre ella havia de fregar i cosir.</p>
+<p>La nit del ball, trista i sola vora la llar, li va aparèixer la seva fada padrina. Amb un toc de vareta, va transformar una carbassa en una carrossa daurada, els ratolins en cavalls blancs i el vestit vell en un de seda blau ple d'estels. I als peus, unes sabates de vidre.</p>
+<p>«Però recorda: a les dotze de la nit tot desapareix!» la va avisar la fada. Al ball, el príncep no va tenir ulls per a ningú més. Van ballar tota la nit. Però quan van sonar les dotze campanades, ella va sortir corrents i va perdre una sabata de vidre a les escales.</p>
+<p>L'endemà, el príncep va buscar per tot el regne la noia a qui li cabia la sabata. Quan va arribar a la casa de la Ventafocs, les germanastres van provar-la, però no els entrava. Llavors la Ventafocs va avançar tímidament i la sabata li va calçar com si fos feta per a ella.</p>
+<p>El príncep la va reconèixer a l'instant i va demanar-li que es casés amb ell. I van ser molt feliços.</p>`
+  },
+  {
+    id:7, emoji:'🐸', title:'La Princesa i la Granota',
+    tema:'Màgia', tags:['princesa','granota','príncep encantat','pou'],
+    resum:'Una princesa fa promeses a una granota que li recupera la pilota daurada.',
+    text:`<p>La princesa jugava cada tarda vora el pou del jardí amb la seva pilota daurada. Un dia se li va relliscar de les mans i va caure al pou fosc. La princesa va posar-se a plorar quan una veu suau li va dir: «Princesa, puc recuperar la teva pilota si em fas una promesa.»</p>
+<p>Era una granota que la mirava des de l'aigua. «Et prometo el que vulguis!» va dir la princesa sense pensar-hi. «Vull menjar al teu plat, dormir al teu coixí i ser el teu amic.» La princesa, una mica disgustada, va dir que sí.</p>
+<p>La granota va bussejar i va tornar amb la pilota daurada. La princesa, contenta, la va agafar i va sortir corrents. «Espera! Recorda la teva promesa!» va cridar la granota.</p>
+<p>El vespre, a sopar, la granota va trucar a la porta. El rei va escoltar la història i va dir a la princesa que havia de complir la seva paraula. Molt a contracor, la nena va deixar que la granota mengés al seu plat i dormís al seu coixí.</p>
+<p>A l'alba, on hi havia hagut la granota hi va aparèixer un jove príncep. Un encanteri el tenia transformat des de feia anys. Gràcies a la paraula de la princesa, s'havia trencat el malefici. I des d'aleshores van ser els millors amics del món.</p>`
+  },
+  {
+    id:8, emoji:'🧊', title:'La Neu i el Gel',
+    tema:'Natura', tags:['hivern','neu','sol','tardor'],
+    resum:'El conte de com la neu i el gel van arribar al nostre país.',
+    text:`<p>Fa molt i molt de temps, a les terres catalanes no hi havia ni neu ni gel. Els hiverns eren freds, però la pluja era sempre pluja, i mai no queien aquells flocs blancs que els avis explicaven que venien de les muntanyes del nord.</p>
+<p>Un any, el vent del nord va barallar-se amb el vent del sud. El vent del nord deia que el fred era bo per a la terra; el vent del sud deia que la calor era millor. La disputa va durar tants dies que el cel es va tornar gris i les nuvolades van pujar fins a dalt dels Pirineus.</p>
+<p>Una nit gèlida, les gotes de pluja es van convertir en flocs de neu. Als matins, l'aigua de les fonts es gel·lificava i brillava com espills trencats. Els nens van sortir al carrer encuriosits, van tocar aquella pols blanca freda i van riure.</p>
+<p>Diuen que des d'aleshores, cada hivern el vent del nord torna a recordar-nos el seu poder, i la neu i el gel arriben per uns dies a cobrir les muntanyes i a vegades els camps. I quan el vent del sud torna a guanyar, la neu es fon i l'aigua omple els rius per a l'estiu.</p>`
+  },
+  {
+    id:9, emoji:'🐦', title:'L\'Ocell d\'Or',
+    tema:'Màgia', tags:['or','príncep','boscos','gall d\'or'],
+    resum:'Un príncep busca el llegendari ocell d\'or que concedeix desitjos.',
+    text:`<p>Al regne hi havia la llegenda d'un ocell d'or que vivia a les muntanyes i concedia tres desitjos a qui fos capaç de trobar-lo. Tres fills del rei van intentar-ho, però els dos grans van tornar avergonyits: havien preferit riure's d'un vell que els demanava ajuda pel camí.</p>
+<p>El fill petit, en Joan, va sortir sense espases ni riqueses. Quan va trobar el vell cansat, li va donar el seu pa i l'aigua. El vell li va agrair l'ajuda i li va dir: «Vés al bosc de plata quan surti la lluna. L'ocell dorm a la branca més alta.»</p>
+<p>En Joan va trobar el bosc, va escalar l'arbre altíssim amb molt d'esforç i va trobar l'ocell d'or adormit. Però en comptes de capturar-lo, el va contemplar en silenci. L'ocell es va despertar i li va preguntar: «Per què no m'agafes?» «Perquè ets massa bonic per viure en una gàbia.»</p>
+<p>L'ocell d'or, emocionat, li va concedir els tres desitjos igualment. En Joan va demanar salut per al seu pare malalt, anyades bones per al poble i saviesa per a ell mateix. L'ocell va complir els tres desitjos i des d'aleshores el regne va prosperar.</p>`
+  },
+  {
+    id:10, emoji:'🧙', title:'El Bruixot i el Moliner',
+    tema:'Enginy', tags:['bruixot','moliner','endevinalla','astúcia'],
+    resum:'Un moliner astut s\'enfronta a un bruixot en un duel d\'endevinalles.',
+    text:`<p>El bruixot de la muntanya tenia aterroritzat el poble. Cada any exigia tribut i si no l'obtenien plantejava un enigma: si ningú l'endevinava, s'emportava tres joves al seu castell fosc. Ningú mai no havia respost bé.</p>
+<p>El moliner, home de poques paraules però molt de seny, va decidir plantar-li cara. «Accepto el teu repte!» va dir. El bruixot va somriure malèvol. «Quin cosa és que sempre camina però mai no arriba?» va preguntar el bruixot. El moliner va pensar: «El camí.» El bruixot va empal·lidir.</p>
+<p>«Ara jo et faig una pregunta a tu» va dir el moliner. «Tinc una cosa que tu no pots comprar, robar ni encantar. Quin és?» El bruixot va pensar hores i hores. Va dir l'or, el vent, el temps... però cap resposta no era correcta.</p>
+<p>«La resposta és la paraula donada de cor», va dir el moliner finalment. «Una promesa sincera no té preu ni màgia que la pugui trencar.» El bruixot, vençut, va haver d'alliberar tots els joves i va marxar de la muntanya per sempre.</p>
+<p>El poble va celebrar la victòria del moliner amb una festa que va durar tres dies i tres nits.</p>`
+  },
+  {
+    id:11, emoji:'🌊', title:'El Pescador i el Peix d\'Or',
+    tema:'Valors', tags:['mar','pescador','desitjos','cobdícia'],
+    resum:'Un pescador allibera un peix màgic que concedeix desitjos, però la seva dona és cada cop més ambiciosa.',
+    text:`<p>Un vell pescador va pescar un dia un peix de color or que li va parlar: «Allibera'm i et concediré el que demanis.» El pescador, un home senzill i bo, el va tornar al mar sense demanar res. Però quan ho va explicar a casa seva, la seva dona es va enfadar molt.</p>
+<p>«Torna i demana-li una casa nova!» va dir. El pescador ho va fer, i van tenir una casa gran. Però la dona aviat va voler un palau. El peix ho va concedir. Llavors va voler ser reina. El peix va obeir, tot i que l'aigua del mar cada cop s'embolicava més.</p>
+<p>La dona es va tornar tan arrogant que va voler ser la senyora del mar i de tots els peixos. Quan el pescador va anar a demanar-ho, el peix va estar molt quiet un moment. L'eau estava negra com la nit.</p>
+<p>«Prou» va dir el peix. «La cobdícia no té fons, però jo sí.» I en un instant tot va desaparèixer. El pescador i la seva dona es van trobar davant de la barraca vella, com el primer dia.</p>
+<p>El pescador va aprendre que el que tenia era suficient, i la seva dona, finalment, va aprendre a estimar el que tenien sense voler sempre més.</p>`
+  },
+  {
+    id:12, emoji:'🌾', title:'La Minyona i els Cigrons',
+    tema:'Valors', tags:['minyona','cigrons','paciència','treball'],
+    resum:'Una minyona treballadora aprèn el valor de la paciència colrant cigrons.',
+    text:`<p>En un mas de la plana, vivien una mare i la seva filla. La mare teixia i la filla ajudava amb les feines del camp. Una tardor, els cigrons no acabaven de madurar i la família tenia poca cosa per menjar.</p>
+<p>La minyona va anar cada dia al camp i mirava els cigrons amb impaciència. Un vell llaurador que passava li va dir: «Noia, si els mires massa, no creixeran. La terra necessita temps i silenci.» Ella no l'escoltà del tot i va continuar anant-hi cada hora.</p>
+<p>Uns quants cigrons, cansats de ser observats, van caure al terra sense madurar. La noia, trista, es va asseure a plorar. Va entendre aleshores el que volia dir el llaurador.</p>
+<p>Va deixar d'anar al camp durant dues setmanes. Quan hi va tornar, els cigrons estaven plens, grossos i madurs. Va collir-los amb cura i la família va tenir sopar calent moltes nits.</p>
+<p>«Les coses bones necessiten temps per fer-se», va dir la mare mentre posava el caldo a bullir. I la minyona mai més va oblidar la lliçó dels cigrons.</p>`
+  },
+  {
+    id:13, emoji:'🌕', title:'El Gegant Egoista',
+    tema:'Valors', tags:['gegant','jardí','nens','generositat'],
+    resum:'Un gegant tanca el seu jardí als nens i la primavera no hi ve mai.',
+    text:`<p>Al final del poble hi havia el jardí més bonic de tota la comarca, amb arbres altíssims plens de fruita i flors de tots colors. Pertanyia a un gegant que havia estat de viatge set anys. Quan va tornar, va trobar els nens del poble jugant al seu jardí.</p>
+<p>«Fora d'aquí!» va cridar, i va posar un mur alt de pedra i un cartell que deia: «Prohibit entrar. Propietat del Gegant.» Els nens ja no hi podien jugar i el jardí es va tornar trist i fosc. La primavera no hi volia entrar: els arbres no floriren, la neu no es fonia i el fred va quedar-s'hi tot l'any.</p>
+<p>Un matí el gegant va sentir una música dolça. Un nen petit havia entrat per un forat del mur i els arbres floriren al seu voltant. El gegant va entendre de cop tota la seva egoisme.</p>
+<p>Va tirar a terra el mur ell sol, i va dir als nens: «El jardí és vostre per sempre.» La primavera va entrar corrents i en un instant tots els arbres van florir. El gegant va jugar amb els nens tota la tarda i mai més va ser tan feliç com aquell dia.</p>`
+  },
+  {
+    id:14, emoji:'🧂', title:'L\'Amor és com la Sal',
+    tema:'Valors', tags:['rei','filla','sal','amor','saviesa'],
+    resum:'Una princesa diu al seu pare que l\'estima com la sal, i ell la bandeja.',
+    text:`<p>Un rei vell va preguntar a les seves tres filles quant l'estimaven. La gran va dir: «Tant com l'or.» La mitjana va dir: «Tant com les pedres precioses.» La petita, que era la més sàvia, va dir: «Tant com la sal.»</p>
+<p>El rei es va enfadar molt. «La sal? Una cosa tan barata i ordinària?» Va bandejar la filla petita del palau. Ella va marxar sense queixar-se i va anar a viure humilment en un poblet.</p>
+<p>Poc temps després, el rei va emmalaltir i no li trobaven gust a res. Els cuiners feien els plats més refinats, però ell no podia menjar. Fins que un dia van oblidar posar sal al brou i el rei el va escupir: «Això no sap a res!»</p>
+<p>Llavors va entendre el que volia dir la seva filla. Va enviar missatgers a buscar-la i quan ella va arribar el rei va plorar: «Tenies raó. L'amor és com la sal: no el veiem, però sense ell tot perd el gust.»</p>
+<p>La filla va perdonar el pare i van viure junts molts anys. I des d'aleshores el rei mai no va deixar que posasin els plats a taula sense sal.</p>`
+  },
+  {
+    id:15, emoji:'🐺', title:'El Llop i les Set Cabretes',
+    tema:'Aventura', tags:['llop','cabretes','mare','astúcia'],
+    resum:'Una cabra mare avisa els fills del llop, però el llop els enganya.',
+    text:`<p>Una cabra mare tenia set fills petits als quals estimava molt. Abans de sortir a pasturar, els va avisar: «Tancaos bé i no obriu a ningú. El llop és astut i pot canviar la veu.» Les cabretes van prometre obeir.</p>
+<p>Quan va trucar el llop imitant la veu de la mare, les cabretes van mirar per la finestra i van veure les potes negres. «La nostra mare té potes blanques. Vés-te'n!» El llop va anar a la farina i es va emblanquinar les potes.</p>
+<p>Quan va tornar a trucar, les cabretes van veure les potes blanques i... van obrir. El llop va entrar i se'n va empassar sis. La setena, la més petita, es va amagar dins del rellotge de paret.</p>
+<p>Quan va arribar la mare, la cabreta petita ho va explicar tot. Van anar a buscar el llop que dormia a la riba del riu amb la panxa plena. Li van obrir la panxa, en van treure les sis cabretes vives, la van omplir de pedres i la van cosir. El llop, en despertar-se, va anar a beure i el pes de les pedres el va arrossegar al riu.</p>
+<p>Les set cabretes van besar la seva mare i van aprendre que l'astúcia del mal no guanya si som prudents.</p>`
+  },
+  {
+    id:16, emoji:'🌲', title:'Hansel i Gretel',
+    tema:'Aventura', tags:['bosc','casa de xocolata','bruixa','nens perduts'],
+    resum:'Dos germans perdu tsin el bosc i troben una casa de dolços habitada per una bruixa.',
+    text:`<p>Hansel i Gretel vivien amb el seu pare llenyataire i la seva madrastra. Un any de gran fam, la madrastra va convèncer el pare de portar els nens al bosc i deixar-los-hi. Hansel ho havia sentit i va omplir les butxaques de pedres blanques.</p>
+<p>Pel camí del bosc, Hansel anava deixant caure les pedres. A la nit, quan els pares van desaparèixer, la lluna il·luminava les pedres i els nens van trobar el camí de tornada. Però la madrastra hi va insistir un altre cop, i aquell dia Hansel només va tenir miques de pa: els ocells se les van menjar totes.</p>
+<p>Perduts al bosc, van trobar una casa feta de pa de pessic, sucre i xocolata. Menjaven de les parets de gana quan una vella va sortir: «Entreu, entreu, nens!» Era una bruixa que engreixava els nens per menjar-se'ls.</p>
+<p>Va tancar Hansel en una gàbia i va obligar Gretel a cuinar. Quan va arribar el moment d'enfornar Hansel, Gretel va empènyer la bruixa dins del forn i va alliberar el seu germà. Van omplir els bossillos de joies de la bruixa i van trobar el camí a casa.</p>
+<p>El pare els va abraçar plorant. La madrastra havia marxat. Amb les joies, la família mai més no va passar fam.</p>`
+  },
+  {
+    id:17, emoji:'❄️', title:'La Reina de les Neus',
+    tema:'Màgia', tags:['gel','amistat','cor de gel','coratge'],
+    resum:'Una nena valenta travessa terres gèlides per salvar el seu amic.',
+    text:`<p>En Kai i la Gerda eren els millors amics. Un hivern, un fragment del mirall del dimoni va entrar a l'ull d'en Kai i al seu cor. Des d'aleshores, tot li semblava lleig i fred. Un dia la Reina de les Neus se l'emportà al seu palau de gel.</p>
+<p>La Gerda no va rendir-se. Va sortir sola a buscar el seu amic per terres desconegudes. Va travessar jardins encantats on les flors li explicaven contes, va conèixer un corb que la va ajudar, va viatjar en un trineu robat i va arribar a un castell de bandits on una nena li va deixar el seu ren.</p>
+<p>El ren la va dur fins a les terres del nord gèlides. Allà, una lapona li va dir: «El seu poder és al seu cor. La força que necessita, ella ja la té.»</p>
+<p>La Gerda va entrar al palau de gel i quan va trobar en Kai, li va abraçar i va plorar. Una llàgrima calenta va caure a l'ull d'en Kai i el fragment de vidre va sortir. El cor se li va desgelar i va recordar tot.</p>
+<p>Van tornar a casa caminant de la mà. Era primavera i les roses floriren al seu jardí com si mai haguessin estat absents.</p>`
+  },
+  {
+    id:18, emoji:'🎀', title:'La Sireneta',
+    tema:'Màgia', tags:['mar','peus','veu','amor'],
+    resum:'Una sirena s\'enamora d\'un príncep i renuncia a la seva veu per tenir peus.',
+    text:`<p>Al fons del mar vivia una sirena que estimava per sobre tot les coses del món dels humans. Tenia una veu tan bonica que els dofins deixaven de nedar per escoltar-la. El seu somni era conèixer el món de dalt.</p>
+<p>Un dia va salvar un príncep que s'ofegava i se n'enamorà. Va anar a la bruixa del mar i li va demanar tenir peus. La bruixa li va prendre la veu i l'hi va advertir: «Si el príncep es casa amb una altra, et convertiràs en escuma de mar.»</p>
+<p>La sirena va viure al palau, va ballar amb peus malgrat el dolor, però sense veu no podia explicar al príncep qui era. Quan el príncep es va casar amb una altra princesa, les germanes de la sirena li van portar un ganivet: «Mata el príncep i tornaràs al mar.» Però ella no podia fer-li mal.</p>
+<p>A l'alba va llançar-se al mar. Però en lloc de fer-se escuma, es va convertir en un esperit de l'aire que envolta el món consolant els cors tristos. I la seva veu, diuen, es pot sentir quan el vent passa suau entre les ones.</p>`
+  },
+  {
+    id:19, emoji:'🌙', title:'La Lluna i el Sol',
+    tema:'Natura', tags:['lluna','sol','dia','nit','creació'],
+    resum:'El conte de com la lluna i el sol es van separar per repartir-se el cel.',
+    text:`<p>Al principi del temps, el Sol i la Lluna vivien junts al cel i brillaven tots dos alhora. El món era sempre de dia i els éssers vius no podien dormir ni descansar. Les flors es marcien de calor i els animals anaven perduts sense nit.</p>
+<p>La Lluna, que era molt comprenedora, va proposar al Sol que s'alternessint. El Sol, orgullós, va dir que ell era el més important. La Lluna no es va enrabiar: «Bé, jo esperaré que tu te'n vagis i llavors sortiré jo.»</p>
+<p>Però el Sol era tossut i no volia cedir. Fins que un dia totes les estrelles van anar a parlar amb ell: «Sol, si no dorms, perdras la força. I sense la Lluna, les marees s'estronquen i els rius s'aturen.»</p>
+<p>El Sol va entendre que no podria fer-ho tot sol. Va acceptar el torn: ell brillaria de dia, la Lluna de nit. I per fer les paus, cada matí i cada vespre es podrien veure un moment, quan el cel es torna taronja i rosa. Per això l'alba i la posta de sol són tan boniques.</p>`
+  },
+  {
+    id:20, emoji:'🌹', title:'La Bella i la Bèstia',
+    tema:'Màgia', tags:['rosa','castell','bèstia','amor verdader'],
+    resum:'Una jove que s\'allotja al castell d\'una bèstia i descobreix la bondat amagada.',
+    text:`<p>Un mercader perdut al bosc va trobar un palau misteriós. En marxar, va tallar una rosa del jardí per a la seva filla Bella, i la Bèstia el va atrapar: «Aniràs a la presó o em donaràs la teva filla.» La Bella, valenta, va decidir quedar-se ella.</p>
+<p>El palau era ple de meravelles: els candelabers parlaven, les copes omplien soles. La Bèstia era lletja i brusca, però tractava la Bella amb respecte. Cada nit sopaven junts i la Bèstia li preguntava: «Bella, vols casar-te amb mi?» Ella sempre deia que no, però s'hi anava acostumant.</p>
+<p>Un dia va demanar permís per visitar el seu pare malalt. La Bèstia li va deixar anar: «Però torna en set dies, si no em moriré de pena.» La Bella es va oblidar del termini. Una nit va somiar la Bèstia moribunda i va sortir corrents.</p>
+<p>Va trobar la Bèstia agonitzant al jardí. «No moris! M'adono que t'estimo», va dir la Bella, i va plorar sobre ell. En aquell instant la Bèstia es va transformar en un príncep jove. Un encanteri el tenia captiu: només l'amor sincer el podia alliberar.</p>
+<p>Van viure junts feliços, i la Bella sempre va recordar que la bondat és més important que la bellesa exterior.</p>`
+  },
+  {
+    id:21, emoji:'🍄', title:'Els Gnoms del Bosc',
+    tema:'Màgia', tags:['gnoms','bosc','tresor','nens'],
+    resum:'Dos nens descobreixen el secret dels gnoms que viuen sota els bolets.',
+    text:`<p>Al bosc de can Puig es deia que sota els bolets vermells amb punts blancs hi vivien gnoms. Ningú els havia vist mai, però de tant en tant desapareixien eines del mas i apareixien els camps llaurats per ells mateixos.</p>
+<p>La Marta i el seu germà Pau van decidir quedar-se desperts tota la nit de Sant Joan per descobrir el secret. Amagats darrere un roure, van veure com a mitjanit s'obrien portes minúscules als peus dels bolets i sortien figures petites amb barrets vermells.</p>
+<p>Els gnoms treballaven cantant cançons que sonaven com campanes llunyanes. Llauraven, plantaven i recollien. Quan l'alba s'acostava, van tornar als seus amagatalls.</p>
+<p>La Marta va deixar una galeta de mel prop d'un bolet. L'endemà la galeta havia desaparegut i al seu lloc hi havia una pedra verda brillant. El vell del poble va dir: «La pedra verda porta sort als que guarden els secrets del bosc.»</p>
+<p>La Marta i el Pau mai van revelar el secret. I diuen que aquell mas sempre va tenir bones collites.</p>`
+  },
+  {
+    id:22, emoji:'🐓', title:'El Gall de Sant Pere',
+    tema:'Llegenda', tags:['gall','sant Pere','ressurrecció','miracle'],
+    resum:'La llegenda del gall que va cantar per anunciar el miracle de Crist.',
+    text:`<p>Conta la llegenda que a Jaca, un pelegrí va ser acusat injustament de robar i el van penjar. El seu pare, desesperat, va anar a Sant Pere i va implorar la seva ajuda. Sant Pere li va dir: «Vés al jutge i digues-li: "El meu fill és tan innocent com viu és aquell gall rostit."»</p>
+<p>El pare va anar al jutge que estava sopant un gall rostit. Quan va dir les paraules de Sant Pere, el gall va aixecar-se de la plata, va batre les ales i va cantar tres cops. Tothom va quedar bocabadat.</p>
+<p>Van córrer a la forca i el jove hi era, viu i sa. Una mà invisible l'havia sostingut. El jutge, penedit, el va alliberar de seguida.</p>
+<p>Des d'aleshores, al Camí de Sant Jaume, es diu que un gall canta per guiar els pelegrins que es perden. I a moltes esglésies del camí hi ha la figura d'un gall al campanar com a recordatori d'aquest miracle.</p>`
+  },
+  {
+    id:23, emoji:'🐉', title:'Sant Jordi i el Drac',
+    tema:'Llegenda', tags:['drac','princesa','cavaller','rosa','llegendes catalanes'],
+    resum:'El cavaller Jordi mata el drac que aterroritzava el poble i salva la princesa.',
+    text:`<p>En un temps llunyà, un drac enorme vivia a les muntanyes prop del poble de Montblanc i atemoria tot el terme. Cada any el poble li oferia un jove per calmar-lo. Un any va tocar el torn a la princesa mateixa.</p>
+<p>Mentre la portaven encadenada a la roca, va aparèixer un cavaller de cavall blanc que duia una creu vermella a l'escut. Era Jordi. «No tingueu por», va dir. I quan el drac va sortir de la cova llançant foc, Jordi va carregar contra ell amb la llança.</p>
+<p>La batalla va ser llarga i terrible, però al final Jordi va clavar la llança al coll del drac i el monstre va caure. De la sang del drac va brotar una rosa vermella. Jordi la va recollir i la va oferir a la princesa.</p>
+<p>El poble va celebrar la victòria. Jordi, que era soldat de passada, va refusar les riqueses i va continuar el seu camí. Va ser nomenat patró de Catalunya i des d'aleshores, cada 23 d'abril, els homes regalen roses i les dones llibres per recordar la seva valentia i generositat.</p>`
+  },
+  {
+    id:24, emoji:'🌊', title:'La Llegenda de Montserrat',
+    tema:'Llegenda', tags:['muntanya','moreneta','pastors','llum'],
+    resum:'La llegenda de com es va trobar la imatge de la Mare de Déu de Montserrat.',
+    text:`<p>Fa molts segles, uns pastors que guardaven els ramats a la muntanya van veure una llum brillant baixar del cel. La llum s'aturava sempre al mateix lloc, entre les roques serrades. Hi anaren i van sentir una música suau com d'angels.</p>
+<p>Van baixar corrents al poble i ho van explicar al bisbe. Tots van pujar junts. A la cova fosca van trobar una imatge de fusta d'una Verge amb el Nen: era petita, fosca i molt antiga, i irradiava una pau profunda.</p>
+<p>Van intentar baixar-la al poble per posar-la a l'església, però quan la portaven s'aturava sola i es tornava tan pesada que no podien moure-la. La deixaven reposar i llavors tornava a ser lleugera. Però sempre parava al mateix punt.</p>
+<p>Entengueren que la Verge volia quedar-se a la muntanya. Allà van construir un monestir que amb el temps es va fer grandíssim. La Moreneta, com l'anomenen, va ser proclamada patrona de Catalunya. I cada any milers de persones pugen a Montserrat a visitar-la.</p>`
+  },
+  {
+    id:25, emoji:'👑', title:'El Rei Artús i l\'Espasa a la Roca',
+    tema:'Aventura', tags:['rei','espasa','cavaller','magnat'],
+    resum:'El jove Artús treu l\'espasa incrustada a la roca i es converteix en rei.',
+    text:`<p>A Anglaterra, quan el rei va morir sense successor, van clavar una espasa a la roca del palau amb una inscripció: «Qui tregui aquesta espasa serà el legítim rei.» Cavallers de tot arreu van venir a provar-ho, però cap no podia ni moure-la.</p>
+<p>El jove Artús no sabia que era fill del rei. Havia crescut al camp amb un cavaller vell com a tutor. Un dia va acompanyar el seu germà adoptiu a un torneig i ell va necessitar una espasa. Artús no en tenia i va veure la que hi havia a la roca del palau.</p>
+<p>«Aquella espasa no te l'agafarà ningú», li van dir. Artús s'hi va acostar, la va agafar amb les dues mans i... va sortir sola, com si mai no hagués estat encastada. La gent va quedar paralitzada.</p>
+<p>El savi Merlí va aparèixer entre la multitud: «Aquest és el rei que esperàvem.» Artús, que era bo i just, va governar amb saviesa i va reunir els cavallers de la Taula Rodona, on tots eren iguals.</p>
+<p>El seu regnat va ser l'època daurada del regne, i les seves aventures es recorden fins avui.</p>`
+  },
+  {
+    id:26, emoji:'🐥', title:'El Patito Feo (El Patillet Lleig)',
+    tema:'Valors', tags:['anec','cisne','bellesa interior','acceptació'],
+    resum:'Un pollet diferent que tothom rebutja i descobreix que és un cigne magnífic.',
+    text:`<p>A la primavera, una ànera va covar molts ous. Tots els pollets van néixer grocs i petits... menys un, que era gran, gris i desgarbat. «Deu ser un anec de granja», van dir la resta. El patitet va créixer sentint-se diferent i lleig perquè ningú no s'hi assemblava.</p>
+<p>Els altres pollets no jugaven amb ell i fins i tot el picaven. El pagès el mirava amb recel. Trist i sol, va marxar a buscar un lloc on el volguessin. Però a l'estany els ànecs salvatges tampoc no el van acceptar.</p>
+<p>Va passar un hivern solitari i duríssim. Moltes vegades estava a punt de rendir-se. Un dia de primavera, quan l'estany es va desgelar, va veure uns animals blancs i elegants que nedaven. Ell s'hi acostà capoficat, pensant que el despreciarien com sempre.</p>
+<p>Però en mirar al l'aigua, no va veure el patitet gris sinó un cigne de coll llarg i plomatge immaculat. Era ell, i sempre havia estat un cigne. Els altres cignes l'acolliren com a germà.</p>
+<p>Va entendre que el que sembla diferent pot ser simplement una cosa que no hem vist prou bé.</p>`
+  },
+  {
+    id:27, emoji:'🎻', title:'El Violinista Màgic',
+    tema:'Màgia', tags:['violí','música','dansa','hechizo'],
+    resum:'Un violinista toca una melodia que fa dansar tot el que li ordena.',
+    text:`<p>El violinista Miquel tenia un violí que havia heretat del seu avi, un músic famós. Aquell violí sonava tan bellament que quan Miquel tocava, el vent s'aturava per escoltar-lo. Però un dia va descobrir que no era només música: quan tocava, la gent havia de ballar sí o sí.</p>
+<p>Un avar del poble li havia robat diners. Miquel va tocar el violí davant d'ell i el va fer ballar hores i hores fins que va demanar perdó i va retornar allò que devia. Però el poder va atreure problemes: un jutge va voler fer-li pagar per "usar màgia".</p>
+<p>Al judici, el jutge va ordenar-li que toqués el violí per demostrar el poder. Miquel va tocar i el jutge, les autoritats, el botxí i tots els presents van haver de ballar. Mentre ballaven, el jutge va anar caient de l'estrada i rient malgrat seu.</p>
+<p>Quan Miquel va parar, el jutge, esgotat i humiliat, el va deixar anar i va admetre que s'havia equivocat. Des d'aleshores, Miquel usava el violí sempre amb justícia i mai per malesa.</p>`
+  },
+  {
+    id:28, emoji:'🏔️', title:'El Comte Mal',
+    tema:'Llegenda', tags:['comte','palau','esperit','Pirineus'],
+    resum:'La llegenda del comte que va pactar amb el diable a les muntanyes del Conflent.',
+    text:`<p>Diu la llegenda que al Conflent hi va haver un comte tan ambiciós que va vendre la seva ànima al diable a canvi de riqueses i poder il·limitats. Va construir un palau altíssim a la muntanya i regnava amb mà de ferro sobre tota la comarca.</p>
+<p>La gent patia impostos abusius i els camps eren dels senyors. El comte no tenia pietat de ningú. Però els anys passaven i el dia del pagament s'acostava. El comte va intentar enganyar el diable amb trucs i enganys, però el diable era més astut.</p>
+<p>Una nit de tempesta, el palau va quedar buit. El comte havia desaparegut. Diuen que el diable se l'endugué. Altres diuen que el comte va escapar i vaga per les muntanyes com a esperit en les nits de tramuntana.</p>
+<p>Els pastors de la zona, quan bufa el vent fort a la nit, diuen que és el Comte Mal que no troba repòs. I ensenyen als fills que l'ambició desmesurada porta al perdent sempre.</p>`
+  },
+  {
+    id:29, emoji:'🐐', title:'Els Tres Cabrots i el Trol',
+    tema:'Aventura', tags:['pont','trol','cabrots','astúcia'],
+    resum:'Tres cabrots han de creuar el pont on hi viu un trol perillós.',
+    text:`<p>Al costat d'una pastura verda hi havia un pont sobre un riu, i a sota del pont vivia un trol horrible que s'empassava qualsevol animal que intentés creuar. Tres cabrots volien arribar a l'altra riba on l'herba era més tendra.</p>
+<p>Va primer el cabrot petit. «Qui va pel meu pont?» va rugir el trol. «Soc petit, espera el meu germà gran que és molt més gros!» El trol va deixar-lo passar. El cabrot mitjà va fer el mateix: «Espera el gran, que és enorme!»</p>
+<p>Finalment va arribar el cabrot gran. «Qui va pel meu pont?» «Sóc jo, el cabrot gran!» El trol va saltar per devorar-lo, però el cabrot gran va clavar-li les banyes al pit. El trol va caure al riu i la corrent se l'endugué.</p>
+<p>Des d'aleshores, els tres cabrots podien creuar lliurement per pasturar a l'altra banda del riu. I ningú va tornar a tenir por del pont.</p>`
+  },
+  {
+    id:30, emoji:'🌟', title:'El Nen Estel',
+    tema:'Valors', tags:['estel','vanitat','humilitat','llastimós'],
+    resum:'Un nen que es creu fill d\'un estel i es fa molt orgullós fins que aprèn la humilitat.',
+    text:`<p>Un nen va trobar al bosc un embolcall de seda daurat i va creure que era fill de les estrelles. Va tornar al poble presumint i rebutjant la seva mare: «No ets la meva mare, sóc fill de les estrelles!» Des d'aleshores va ser cruel amb els pobres i superb amb tothom.</p>
+<p>Però un dia el seu cos va canviar: es va cobrir de taques, es va tornar lleig i tothom fugia d'ell. Va recórrer terres buscant els seus pares estel·lars, però ningú no el volia. Dormiia al ras i passava fam.</p>
+<p>Un dia va trobar un leprós i el va ajudar malgrat el fàstic que sentia, i va compartir amb ell el poc que tenia. El leprós es va transformar en un rei poderós i els seus pares resultaren ser el rei i la reina d'una terra llunyana.</p>
+<p>Però la seva mare, la pobra dona del bosc que havia rebutjat, havia mort de pena. El nen va plorar amargament i va entendre que el veritable origen d'una persona no és el que el fa bo o dolent, sinó les seves accions.</p>
+<p>Va governar amb justícia i compassió durant la resta de la seva vida.</p>`
+  },
+  {
+    id:31, emoji:'🌺', title:'La Fada del Bosc Verd',
+    tema:'Màgia', tags:['fada','boscos','nena','desitjos'],
+    resum:'Una nena perd-se al bosc i troba una fada que li ensenya la màgia de la natura.',
+    text:`<p>La Júlia vivia al costat d'un bosc que s'estenia fins on no arribava la vista. La seva mare li havia dit moltes vegades que no s'hi endinsés sola. Però un dia, seguint una papallona blava, va entrar entre els arbres.</p>
+<p>Quan va voler tornar, tots els arbres semblaven iguals i no trobava el camí. Va seure a plorar prop d'un roure antic. De sob te, de l'escorça del roure va sortir una figura petita de llum verda: era la Fada del Bosc Verd.</p>
+<p>«No ploris», va dir la fada. «Et portaré a casa, però primer has d'aprendre alguna cosa.» Li va ensenyar a escoltar el bosc: el murmuri del rierol porta sempre al poble, els ocells que canten a l'alba miren cap a l'est, les molses creixen al nord dels arbres.</p>
+<p>La Júlia va aprendre a llegir el bosc com un llibre. La fada la va portar fins al límit dels arbres i va desaparèixer. La Júlia va arribar a casa sana i salva, i des d'aleshores el bosc ja no li feia por: era un amic que sabia parlar-li.</p>`
+  },
+  {
+    id:32, emoji:'🥣', title:'Blancaneu',
+    tema:'Màgia', tags:['mirall','bruixa','nans','princesa','son'],
+    resum:'Una princesa fuig de la seva madrastra dolenta i viu amb set nans al bosc.',
+    text:`<p>Blancaneu tenia els llavis vermells com les cireres, la pell blanca com la neu i els cabells negres com l'eben. La seva madrastra, envejosa, consultava el mirall màgic: «Mirall, mirall, qui és la més bella?» Mentre responia «la reina», tot anava bé. Però un dia el mirall va dir: «Blancaneu.»</p>
+<p>La reina va ordenar a un caçador que matés la nena al bosc. El caçador, no podent fer-ho, la va deixar fugir. Blancaneu va córrer bosc endins fins a trobar una caseta petita de set nans miners.</p>
+<p>Els nans la van acollir a canvi que cuinés i netegés. Però la madrastra va descobrir que vivia i, disfressada de vella venedora, li va oferir una poma emmetzinada. Blancaneu va mossegar-la i va caure en un son profund.</p>
+<p>Els nans, desconsolats, la van posar en un taüt de vidre al bosc. Un príncep que passava es va enamorar d'aquell somni i va demanar portar-la. Mentre transportaven el taüt, un estigall va fer trontollar tot, el tros de poma va sortir de la gola de Blancaneu i ella es va despertar.</p>
+<p>Van viure feliços i la madrastra va haver de fugir lluny del regne.</p>`
+  },
+  {
+    id:33, emoji:'🔑', title:'Barba Blava',
+    tema:'Aventura', tags:['castell','clau','secret','curiositat'],
+    resum:'Una dona curiosa desobeeix i obre la porta prohibida del seu marit misteriós.',
+    text:`<p>Un home ric amb una barba blava atemoridor havia tingut moltes esposes, totes desaparegudes. Un bon dia es va casar amb una jove valenta. Quan va marxar de viatge, li va donar el manat de claus i li va dir: «Pots obrir totes les portes menys la de la torre de pedra.»</p>
+<p>La curiositat va créixer dia a dia. Finalment, la jove va obrir la porta. A dins hi havia les restes de les esposes anteriors. Espantada, va deixar caure la clau màgica i quan la va recollir estava tacada de sang que no s'esborrava.</p>
+<p>Quan Barba Blava va tornar i va veure la clau tacada, ho va saber tot. «Moriràs», va dir. La jove va demanar temps per resar. Els seus germans, que havien quedat a visitar-la, van sentir els seus crits i van arribar a temps d'aturar Barba Blava.</p>
+<p>La jove va heretar les riqueses del malvat i va poder viure lliurement. Va aprendre que la curiositat a vegades porta conseqüències, però que demanar ajuda als qui t'estimen sempre salva.</p>`
+  },
+  {
+    id:34, emoji:'🌻', title:'El Jardí Secret',
+    tema:'Natura', tags:['jardí','amics','curar','plantes'],
+    resum:'Una nena malaltissa descobreix un jardí tancat i amb ell recupera la salut.',
+    text:`<p>La Maria vivia en un castell gran i fred amb el seu pare, que viatjava sovint. Estava sempre tancada a la seva cambra i deia que era malaltissa. Un dia, per una finestra, va veure un mur cobert d'heura i va preguntar a la criada: «Quin jardí hi ha allà darrere?»</p>
+<p>La criada va dir que era un jardí tancat des de que va morir la seva mare. Aquella nit, curiosa, la Maria va trobar la clau antiga en un calaix polsós. Va obrir el jardí i el va trobar salvatge i ple de males herbes, però viu.</p>
+<p>Cada dia, en secret, hi anava a cavar, plantar i regar. Un dia un nen del poble la va descobrir i es va fer amic seu. Aviat el jardí va omplir-se de flors i ocells. La Maria sortia cada mati i tornava amb les galtes rosades.</p>
+<p>Quan el seu pare va tornar, no reconeixia la filla saludable i alegre que corria per les galeries. Van obrir junts el jardí davant d'ell i el pare va plorar: era el jardí de la mare, que ell havia tancat de pena. El jardí va reunir la família.</p>`
+  },
+  {
+    id:35, emoji:'🎠', title:'El Cavall de Cartró',
+    tema:'Imaginació', tags:['nen','imaginació','cavall','aventures'],
+    resum:'Un nen pobre que juga amb un cavall de cartró i viu aventures extraordinàries.',
+    text:`<p>En Tomàs era fill d'un fuster i no tenia joguines cares. El seu pare li havia fet un cavall de cartró pintat de marró amb una crinera de llana. Per als altres nens era una banalitat; per a en Tomàs era el millor cavall del món.</p>
+<p>Cada tarda li posava un nom diferent i sortia al jardí a cavalcar: un dia era un guerrer medieval, l'altre un explorador de terres llunyanes. Els nens rics que tenien cavalls de fusta pintada el miraven des de lluny.</p>
+<p>Un dia van venir uns titiritaires al poble amb animals exòtics. En Tomàs els va acompanyar tot el camí jugant que el seu cavall els escortava. Els titiritaires van riure's de bon humor i li van dir: «Noi, amb aquella imaginació, un dia crearàs mondes sencers.»</p>
+<p>En Tomàs va créixer i va ser un gran escriptor d'aventures. Sempre tenia el cavall de cartró damunt de l'escriptori. I a cada llibre hi apareixia un cavall brau que s'assemblava molt a aquell de la infantesa.</p>`
+  },
+  {
+    id:36, emoji:'🌈', title:'L\'Arc de Sant Martí',
+    tema:'Natura', tags:['colors','pluja','sol','llegenda'],
+    resum:'La llegenda de com va néixer l\'arc de Sant Martí.',
+    text:`<p>Fa molt de temps, el cel no tenia colors. Era sempre gris, fins i tot quan brillava el sol. Les gotes de pluja es barallaven amb els raigs de sol perquè no podien existir al mateix temps.</p>
+<p>Un dia Sant Martí, el cavaller que havia donat la seva capa a un pobre, va pujar al cel. Estava molt trist de veure tant gris. Va demanar a les gotes de pluja i als raigs de sol que fessin les paus.</p>
+<p>«Si aconseguiu viure junts un moment», va dir, «us donaré el do més bell.» La pluja i el sol, curiosos, van provar. Les gotes de pluja van refraccionar la llum del sol i de sobte, per primera vegada, van aparèixer set colors al cel: vermell, taronja, groc, verd, blau, índigo i violat.</p>
+<p>Tothom a la terra va mirar cap amunt bocabadat. Des d'aleshores, cada vegada que la pluja i el sol coincideixen, el cel els agraeix pintant l'arc de Sant Martí. I és per això que l'arc apareix just quan para de ploure i surt el sol.</p>`
+  },
+  {
+    id:37, emoji:'🌊', title:'El Corall Vermell',
+    tema:'Natura', tags:['mar','pesca','corall','Costa Brava'],
+    resum:'La llegenda del pescador que va descobrir el corall vermell de les costes catalanes.',
+    text:`<p>Als temps en que els pescadors de la Costa Brava sortien de nit amb llanternes penjades a les barques, un d'ells, en Jaume, va enganxar a la xarxa quelcom que brillava com la sang. Era una branca de corall vermell, la primera que es veia per aquells mars.</p>
+<p>La gent del port va córrer a veure'l. La llum del matí feia brillar el corall com un tros de posta de sol. Un mercader el volia comprar per dur-lo a les corts d'Europa, però en Jaume va refusar.</p>
+<p>Va portar el corall al santuari del cim del turó i l'hi va deixar com a ofrena. Aquell any, els bancs de peix no s'allunyaren i la pesca va ser abundant com mai. Cada any en Jaume tornava a bussejar i a vegades en trobava més.</p>
+<p>Diuen que el corall vermell del Mediterrani neix de les llàgrimes de les fades marines que ploren pels nàufrags. I per tant, qui el respecta, el mar el protegeix.</p>`
+  },
+  {
+    id:38, emoji:'🐜', title:'La Formiga i la Cigala',
+    tema:'Valors', tags:['formiga','cigala','hivern','previsió'],
+    resum:'La cigala que canta tot l\'estiu i la formiga que treballa per a l\'hivern.',
+    text:`<p>Mentre la formiga treballava dur tot l'estiu portant grans al seu niu, la cigala s'asseia a l'ombra i cantava sense parar. «Per què treballes tant?» li preguntava la cigala. «L'estiu és per gaudir!»</p>
+<p>La formiga seguia treballant sense respondre gaire. «Quan arribi l'hivern, agraïré haver-me preparat», va dir simplement un dia. La cigala va riure i va continuar cantant.</p>
+<p>Però quan va arribar el fred i la neu va cobrir els camps, la cigala no tenia res per menjar. Tota tremolosa, va anar al niu de la formiga i va demanar menjar. La formiga va obrir la porta i la va mirar.</p>
+<p>«Quan jo treballava tu cantaves. Ara que és hivern, per què no bailles?» va dir. Però la formiga, que en el fons era bona, va compartir una part del seu menjar. «Però l'any que ve recorda: el treball d'estiu dóna força per a l'hivern.»</p>
+<p>La cigala mai va oblidar la lliçó. A l'estiu següent, cantava i treballava alhora, i l'hivern no li va fer por.</p>`
+  },
+  {
+    id:39, emoji:'🐦', title:'L\'Ocell de Foc',
+    tema:'Màgia', tags:['fènix','foc','renéixer','esperança'],
+    resum:'La llegenda de l\'ocell que mor i ressorgeix de les cendres.',
+    text:`<p>Als boscos de l'orient llunyà hi havia un ocell que els sages anomenaeven el Fènix. Era enorme, tenia les plomes daurades i vermelles com les flames i vivia cinc-cents anys. Quan es feia vell, construïa un niu de canella i mirra i s'hi deixava consumir pel foc.</p>
+<p>Però de les cendres calentes, al tercer dia, sortia un ou i de l'ou naixia un Fènix jove, ple d'energia, amb les mateixes memòries que el Fènix anterior. Era el mateix ocell, renascut.</p>
+<p>Un rei va escoltar la llegenda i va voler capturar el Fènix. Va enviar els millors caçadors, però l'ocell no es podia capturar: si qualcú intentava agafar-lo, s'incendiava tot sol. El rei va comprendre que hi ha coses que no es poden posseir.</p>
+<p>Diuen que el Fènix apareix en temps de gran necessitat als qui han perdut tot. El seu cant els dóna força per tornar a començar. Perquè fins i tot de les cendres, la vida pot renéixer.</p>`
+  },
+  {
+    id:40, emoji:'🏰', title:'El Castell de les Set Torres',
+    tema:'Aventura', tags:['castell','princesa','set reptes','príncep'],
+    resum:'Un príncep ha de superar set reptes en set torres per alliberar la princesa.',
+    text:`<p>Al cim de la muntanya hi havia el Castell de les Set Torres, on un encanteri tenia captiva la princesa Estel. Un príncep valent va acceptar el repte: per alliberar-la havia de superar una prova a cada torre.</p>
+<p>A la primera torre havia de dir la veritat sense por. A la segona, mostrar valentia davant d'un lleó. A la tercera, resoldre un enigma de paraules. A la quarta, demostrar paciència esperant tres dies sense moure's. A la cinquena, renunciar a un tresor per ajudar un pobre. A la sisena, conèixer el seu propi cor. I a la setena, demanar perdó per un error del passat.</p>
+<p>El príncep va superar cada prova amb molta reflexió i humilitat. Quan va entrar a la cambra de la setena torre, la princesa Estel l'esperava. Però l'encanteri no es va trencar amb un petó, sinó quan el príncep va dir: «He après que no vinc a rescatar-te, vinc a conèixer-te.»</p>
+<p>L'encanteri es va esfumar. La princesa, que era una reina sàvia, havia triat ella mateixa el repte per trobar un company de vida digne. Van governar junts molt bé.</p>`
+  },
+  {
+    id:41, emoji:'🦊', title:'La Guineu i el Corb',
+    tema:'Valors', tags:['guineu','corb','formatge','astúcia','vanitat'],
+    resum:'Una guineu astuta aconsegueix el formatge d\'un corb vanidós amb els seus elogis.',
+    text:`<p>Un corb havia trobat un tros de formatge i va pujar a una branca alta per menjar-lo tranquil. Una guineu astuta el va veure des de baix i se li va fer la boca aigua.</p>
+<p>«Oh, senyor Corb! Com és de bonic el vostre plomatge! Negre com la nit i lluent com l'atzabeja. I diuen que la vostra veu és la més bella del bosc. Si us plau, canteu-me una cançó!»</p>
+<p>El corb, inflat d'orgull, va obrir el bec per cantar... i el formatge va caure a terra. La guineu el va agafar corrents. «Gràcies!» va cridar rient. «Si teniu cervellet, el qui us faci elogis sempre vol alguna cosa.»</p>
+<p>El corb va quedar-se al branca avergonyit i sense sopar. Des d'aleshores, quan algú el feia massa compliments, s'aturava a pensar si volia alguna cosa a canvi. I la guineu va sopar de meravella aquella nit.</p>`
+  },
+  {
+    id:42, emoji:'🌙', title:'El Nin de la Lluna',
+    tema:'Màgia', tags:['lluna','nen','somni','estrelles'],
+    resum:'Un nen que cada nit puja a jugar amb la lluna i les estrelles.',
+    text:`<p>En Pau no podia dormir de nit perquè li agradava massa mirar la lluna. Una nit va veure que un raig de lluna baixava fins a la seva finestra com una escala daurada. Sense pensar-hi, hi va posar el peu i va començar a pujar.</p>
+<p>La lluna era grossa i suau, com una pilota de cotó. Les estrelles eren punts de llum càlida que brillaven i s'apagaven jugant a amagar-se. En Pau va saltar d'estrella en estrella tota la nit.</p>
+<p>Quan l'alba s'acostava, la lluna li va dir: «Has de tornar. Però pots tornar sempre que vulguis, mentre siguis honest i bon noi.» Va baixar per l'escala de llum i es va trobar al llit.</p>
+<p>Des d'aleshores, quan algú preguntava a en Pau per qué sempre mirava el cel de nit amb un somriure, ell responia: «Estic saludant els amics.»</p>`
+  },
+  {
+    id:43, emoji:'🎭', title:'El Gegant i el Nan',
+    tema:'Enginy', tags:['gegant','nan','intel·ligència','força'],
+    resum:'Un nan petit supera un gegant enorme gràcies a la seva intel·ligència.',
+    text:`<p>El gegant Goliard vivia a la muntanya i feia pagar peatge a tots els qui passaven. Ningú no gosava enfrontar-s'hi perquè era el doble d'alt que qualsevol home. Fins que va arribar el nan Bernadet, que no li arribava ni al genoll.</p>
+<p>«Et repte!» va dir Bernadet. El gegant va riure tant que les muntanyes van tremolar. «Et faré cinc proves i si en guanyes tres, no pago mai més peatge.» El gegant va acceptar, segur de guanyar.</p>
+<p>Primera prova: qui llança una pedra més lluny. Bernadet va agafar un ocell viu i el va llançar: va volar fins a perdre's de vista. Gegant perdut. Segona: qui menja més. Bernadet portava un sac amagat sota la camisa i hi va ficar el menjar. Gegant perdut. Tercera: qui porta l'arbre més gran. «Porta tot el bosc d'una vegada», va dir Bernadet. «Quan tornem per aquí no vull fer dos viatges.» El gegant no va poder ni intentar-ho.</p>
+<p>Va perdre el repte i mai més va cobrar peatge. I va aprendre que la intel·ligència pot molt més que la força bruta.</p>`
+  },
+  {
+    id:44, emoji:'🌿', title:'La Planta Màgica',
+    tema:'Natura', tags:['planta','jardí','màgia','curar'],
+    resum:'Una planta que creix de nit i cura les malalties del poble.',
+    text:`<p>A les muntanyes del Montseny hi havia una planta que els herbolaris buscaven: creixia a les roques dels llocs inaccessibles i només flocia la nit de Sant Joan. Les seves flors groguenques curaven les febres altes que no cedien amb res.</p>
+<p>La Joana, filla d'una herbolària, va decidir buscar-la. Va pujar sola amb una llanterna aquella nit de juny. Les estrelles li marcaven el camí i el cant dels grills l'acompanyava. Quan va arribar a la roca alta, hi va trobar un vell assegut.</p>
+<p>«Busques la planta?» va preguntar. «Sí, per curar el meu germà.» El vell li va ensenyar a reconèixer-la, a collir-la respectuosament i a no agafar mai massa. «La planta és del bosc, no de ningú. Pren el que necessites i dóna les gràcies.»</p>
+<p>La Joana va baixar amb les flors i va curar el seu germà. Cada any tornava a aquella roca i el vell hi era. Diuen que era l'esperit del Montseny, que guardava els seus secrets.</p>`
+  },
+  {
+    id:45, emoji:'👣', title:'Les Petjades de Gegant',
+    tema:'Llegenda', tags:['gegant','roca','petjada','Pirineus'],
+    resum:'La llegenda de les petjades de gegant que es veuen a les roques dels Pirineus.',
+    text:`<p>Als Pirineus, si puges per certs senders, trobaràs a les roques planes unes depressions que semblen petjades humanes però molt més grans. Els pastors de sempre diuen que les va deixar el gegant Uriel quan caminava per les muntanyes en els temps antics.</p>
+<p>Uriel era tan gran que quan baixava al poble a comprar pa, havia de doblegar-se en tres per passar per les portes. Caminava per les crestes com nosaltres caminem per les valls, i els seus passos feien trontollar les pedres.</p>
+<p>Un dia de tardor, mentre baixava a ajudar uns pagesos a collir les pomes, es va quedar enganxat a la boira espessa. Va caminar sense saber on anava i va trepitjar fort moltes roques buscant terreny ferm. Les petjades van quedar gravades per sempre.</p>
+<p>Finalment va sentir les campanes del poble i va trobar el camí. Va ajudar amb la collita i va marxar a les muntanyes. I les seves petjades a les roques ens recorden que fins els gegants de vegades es perden, però la gent bona sempre troba el camí.</p>`
+  },
+  {
+    id:46, emoji:'🦅', title:'L\'Àliga i la Serp',
+    tema:'Natura', tags:['àliga','serp','llibertat','terra','cel'],
+    resum:'La rivalitat eterna entre l\'àliga del cel i la serp de la terra.',
+    text:`<p>Des del principi dels temps, l'Àliga i la Serp han estat rivals. L'Àliga reina el cel i mira el món des de dalt. La Serp coneix cada secret de la terra, cada roca i cada arrel. Un dia van decidir quin element era el més important.</p>
+<p>«Sense el cel, no hi hauria pluja i la terra seria desert», va dir l'Àliga. «Sense la terra, l'àliga no tindria on pondre els ous ni on caçar», va respondre la Serp.</p>
+<p>Van demanar a un vell savi que jutgés. El vell va dir: «Porteu-me el tresor que estimeu més.» L'Àliga va portar una ploma daurada. La Serp va portar una pedra verda brillant. El vell les va ficar en una caixa.</p>
+<p>«Sense el cel, la ploma cau sense aire. Sense la terra, la pedra no existeix. Sou iguals de necessaris.» Des d'aleshores, l'Àliga i la Serp es respecten. Per això molts escuts antics mostren una àliga amb una serp: símbols de tot el que existeix.</p>`
+  },
+  {
+    id:47, emoji:'🌺', title:'La Rosa de Jericó',
+    tema:'Màgia', tags:['rosa','desert','miracle','vida'],
+    resum:'La llegenda de la rosa que ressuscita quan toca l\'aigua.',
+    text:`<p>La Rosa de Jericó era la més singular de les plantes: quan la terra s'assecava del tot, ella s'arronçava tota i quedava seca com una pilota de palla morta. Podia estar anys i anys així, rodant pels deseris portada pel vent.</p>
+<p>Una família de pelegrins va trobar una d'aquelles pilotes seques al desert. El pare volia llençar-la, però la filla petita l'hi va guardar a la motxilla. «Sembla morta, però potser no ho és.»</p>
+<p>Quan van arribar a un oasi i la nena va ficar la pilota seca a l'aigua... al cap d'unes hores, lentament, les branques es van desenrotllar i van aparèixer fulles verdes. En poques hores era una planta bonica i viva.</p>
+<p>«Moltes coses semblen mortes perquè els falta la gota d'amor i atenció adequada», va dir el pare, sorprès. La nena va mantenir la planta viva durant molts anys. I quan semblava que anava malament, li posava aigua i la planta tornava a florir.</p>`
+  },
+  {
+    id:48, emoji:'🎪', title:'El Circ de les Meravelles',
+    tema:'Imaginació', tags:['circ','màgia','acròbates','somnis'],
+    resum:'Un nen descobreix un circ màgic que apareix una sola nit a l\'any.',
+    text:`<p>La primera vegada que en Marc va sentir la música de flauta des de la seva finestra, eren les dotze de la nit. Va sortir al carrer i va veure que al camp del costat havia aparegut, sense que ningú l'hagués vist arribar, un circ de teles vermelles i daurades.</p>
+<p>A dins, les acròbates volaven sense xarxa de seguretat i no caien mai. Els cavalles danzaven al compàs d'una orquestra invisible. Un pallasso feia aparèixer flors de no-res i les regalava als nens. Un mag posava al seu sac els somnis que la gent li oferia i els transformava en llum.</p>
+<p>En Marc va veure que el seu veí, que havia perdut el fill feia anys, va plorar davant del mag i d'aquella llum. I va riure per primera vegada en molt temps.</p>
+<p>A l'alba, el circ havia desaparegut. No quedava ni una clavilla al terra. En Marc va buscar informació però ningú al poble el coneixia. Cada any la primera nit d'estiu tornava a escoltar la flauta. Però cada any el circ apareixia en un lloc diferent.</p>`
+  },
+  {
+    id:49, emoji:'🦁', title:'El Lleó i el Ratolí',
+    tema:'Valors', tags:['lleó','ratolí','amistat','gratitud'],
+    resum:'Un ratolí salva la vida del lleó que un dia el va perdonar.',
+    text:`<p>Un ratolí petit va despertbar per accident el lleó que dormia a l'ombra. El lleó el va agafar amb una urpa enorme i el ratolí va tremolar. «Perdona'm, rei! Si em deixes anar, un dia et pagaré el favor!» El lleó va riure: «Que pot fer un ratolinet per a mi?» Però li va fer gràcia i el va alliberar.</p>
+<p>Temps després, el lleó va caure en una xarxa de caçadors i rugiu tant fort que el bosc tremolava. El ratolí va sentir els seus crits i va córrer fins allà. Sense dubtar, va començar a rosegar les cordes amb les seves dents petites però afilades.</p>
+<p>Corda a corda, nus a nus, va alliberar el lleó en poc temps. El lleó el va mirar amb uns ulls nous. «Tenies raó. El petit pot fer molt pel gran.»</p>
+<p>Des d'aleshores eren amics inseparables i el lleó mai més va menysprear ningú per la seva mida o aparença.</p>`
+  },
+  {
+    id:50, emoji:'🌊', title:'El Noi que Va Aturar la Pluja',
+    tema:'Enginy', tags:['pluja','inundació','enginy','valentia'],
+    resum:'Un noi intel·ligent que salva el seu poble d\'una gran inundació.',
+    text:`<p>Van venir dies de pluja continua i el riu va créixer tant que ja escumejava per damunt dels marges. Tot el poble estava alarmant. L'alcalde va demanar ajuda als mestres d'obres, però cap no sabia com aturar l'aigua a temps.</p>
+<p>En Guimet, un noi de deu anys, va preguntar si podia dir alguna cosa. La gent va riure, però l'alcalde va dir: «Parla.» «La pluja no es pot aturar, però l'aigua sí. Hi ha aquella antiga bassa abandonada a la vall del costat. Si obrim el pas lateral, l'excés d'aigua hi anirà.»</p>
+<p>Els adults van callar. Era simple, però ningú no hi havia pensat. Van obrir el pas en poques hores i el riu va baixar fins a nivell normal. El poble va quedar salvat.</p>
+<p>En Guimet va aprendre que a vegades la solució més senzilla és la que millor funciona, i que l'edat no és la que fa les bones idees. El poble li va dedicar una placa a la bassa: "La Bassa d'en Guimet".</p>`
+  },
+  {
+    id:51, emoji:'🦋', title:'La Metamorfosi de la Papallona',
+    tema:'Natura', tags:['papallona','eruga','transformació','paciència'],
+    resum:'La história d\'una eruga que aprèn el significat de la transformació.',
+    text:`<p>L'eruga Pepita menjava fulles i pensava que la seva vida seria sempre igual: menjar, dormir, menjar. Un dia va veure una papallona i va preguntar: «Qui ets?» «Soc el que tu seràs», va respondre la papallona i va volar.</p>
+<p>Pepita va quedar pensativa. Un dia va sentir un impuls profund: havia de fer-se una crisàlide. Va trigar molt a tancar-se dins d'aquella coberta dura i fosca. No hi veia res. Semblava que tot s'acabava.</p>
+<p>Des de fora, un nen del jardí que la vigilava cada dia va pensar que havia mort. Volia ajudar-la i va fer un tallet a la crisàlide per treure-la. Però la papallona que va sortir tenia les ales dèbils i no va poder volar bé.</p>
+<p>El vell del jardí li va explicar: «La lluita per sortir de la crisàlide és el que dona força a les ales. Si l'ajudes massa, no podrà volar.» Pepita va volar bé, però lentament. Va aprendre que les dificultats ens fan forts. I el nen va aprendre que de vegades la millor ajuda és deixar que les coses passin soles.</p>`
+  },
+  {
+    id:52, emoji:'🎶', title:'La Flauta Encantada',
+    tema:'Màgia', tags:['flauta','música','rates','flautista'],
+    resum:'Un flautista allibera el poble de les rates amb la seva música màgica.',
+    text:`<p>El poble d'Hamelin estava infestat de rates. Les rates menjaven el gra, rosegaven la roba i portaven malalties. L'alcalde va prometre cent monedes d'or a qui resolguès el problema. Va aparèixer un home estrany amb una flauta multicolor.</p>
+<p>Va tocar la flauta i de tots els racons van sortir les rates, seguint la música com embolicades. El flautista les va guiar fins al riu i totes s'hi van llençar. El poble va quedar net.</p>
+<p>Però l'alcalde, garrepa, va negar-li les cent monedes. «No val la pena pagar tan per tocar una flauta.» El flautista va avisar: «Pagaràs d'una altra manera.» Va tornar a tocar i aquest cop eren els nens els que el seguien, donant salts i rient.</p>
+<p>Els pares desesperats van córrer a l'alcalde. L'alcalde, pendit, va pagar les monedes. El flautista va tornar a tocar i els nens van desaparèixer del seu tràngol i van tornar sa i estalvis. L'alcalde va aprendre que les promeses s'han de complir sempre.</p>`
+  },
+  {
+    id:53, emoji:'🌾', title:'Joan i la Planta de Mongetes',
+    tema:'Aventura', tags:['mongetes','gegant','nuvol','or','aventura'],
+    resum:'Un noi ven la vaca per mongetes màgiques i puja als núvols on viu un gegant.',
+    text:`<p>La mare d'en Joan va enviar-lo a vendre la vaca al mercat. Pel camí va trobar un vell que li va oferir cinc mongetes de colors a canvi de l'animal. «Són màgiques», va dir. La mare va enfadar-se molt i va llençar les mongetes per la finestra.</p>
+<p>L'endemà al matí, una planta de mongetes havia crescut fins al cel. En Joan va pujar per les branques fins a travessar els núvols. Allà hi havia un castell enorme. Va entrar i va trobar una gallina que ponia ous d'or, una arpa que tocava sola i moltes riqueses.</p>
+<p>Era el castell d'un gegant que havia robat aquelles meravelles a la família d'en Joan anys enrere. El gegant dormia i en Joan va agafar la gallina i l'arpa. L'arpa va cridar: «Amo, em porten!» El gegant es va despertar furiós i va perseguir en Joan per la planta de mongetes.</p>
+<p>En Joan va baixar ràpid, va agafar una destral i va tallar la planta. El gegant va caure i la terra el va engolir. En Joan i la seva mare van viure riques i feliços a la casa que van construir.</p>`
+  },
+  {
+    id:54, emoji:'💀', title:'La Mort i el Vell',
+    tema:'Valors', tags:['mort','vell','vida','acceptació'],
+    resum:'Un vell molt cansat crida la Mort però quan arriba, canvia d\'opinió.',
+    text:`<p>Un vell llenyataire portava dècades tallant llenya al bosc. Un dia, esgotat, va deixar caure el feix d'estiques a terra i va cridar: «Mort, vine! No puc més!» Va quedar-se assegut esperant.</p>
+<p>Al cap d'una estona, una figura va aparèixer entre els arbres. Era la Mort, una dona tranquil·la amb una capa grisa. «M'has cridat?» va preguntar amb veu suau. El vell la va mirar i de sobte tot el que estimava li va venir al cap: els nets que l'esperaven a sopar, el gust del pa amb tomàquet, la calor del foc, la veu de la seva filla.</p>
+<p>«Sí... volia que m'ajudessis a aixecar el feix», va dir el vell. La Mort va somriure lleugerament i va ajudar-lo a carregar la llenya. «Quan sigui el moment, tornarem a trobar-nos.» I va desaparèixer entre els arbres.</p>
+<p>El vell va tornar a casa amb el feix de llenya. Va sopar amb els nets, va riure, i va pensar que encara tenia moltes coses bones per les que valia la pena continuar.</p>`
+  },
+  {
+    id:55, emoji:'🌺', title:'El Roser de la Paret',
+    tema:'Natura', tags:['roses','primavera','llac','temps'],
+    resum:'Un roser centenari que conta la història de totes les primaveres que ha vist.',
+    text:`<p>Al pati de la casa vella hi havia un roser que ningú no recordava qui havia plantat. Tenia el tronc retorçut com una corda vella i les branques s'estenien per tota la paret. Florid, era el més bonic del barri.</p>
+<p>La nena Laia li preguntava coses. Sabia que les plantes senten, si les escoltes. El roser no parlava amb paraules, però quan li preguntava coses, el vent movia les seves branques d'una manera especial.</p>
+<p>Un dia la Laia li va preguntar: «Quantes primaveres has vist?» El vent va agitar moltes branques, unes darrere les altres. La Laia va intentar comptar però eren massa. «Has vist la guerra?» Silenci llarg. «Has vist nens com jo aquí?» El vent va moure suaument una sola branca, com dient: «Sí, molts.»</p>
+<p>La Laia va entendre que aquell roser era la memòria viva de la casa. Cada primavera li portava una mica d'adob i una cançó, i el roser floria millor que mai.</p>`
+  },
+  {
+    id:56, emoji:'🐝', title:'L\'Abella Reina',
+    tema:'Natura', tags:['abella','mel','rusc','cooperació'],
+    resum:'La història de com les abelles van aprendre a treballar juntes.',
+    text:`<p>Al principi del món, les abelles no sabien fer mel. Volaven soles d'una flor a l'altra, provant els nèctars, però mai no guardaven res. Cada hivern passaven fred i fam.</p>
+<p>Un dia, una abella molt viatgera va conèixer un savi arbre que li va dir: «Si treballeu juntes, podreu guardar la dolçor de l'estiu per a l'hivern.» L'abella va tornar al grup i ho va explicar. Al principi algunes no volien canviar de costums.</p>
+<p>Però la més gran de totes, la que aviat seria la reina, va proposar: «Provem un any. Si no funciona, cadascuna fa el que vol.» Van construir el rusc, van dividir les tasques, van recol·lectar nèctar i el van transformar en mel.</p>
+<p>Quan va arribar l'hivern, totes tenien menjar. El rusc era càlid i sorollós de vida. I totes van entendre que juntes eren molt més fortes que soles. Des d'aleshores, les abelles treballen en comunitat i la mel que produixen endolceix el món sencer.</p>`
+  },
+  {
+    id:57, emoji:'🏺', title:'La Gerra d\'Oli de la Vídua',
+    tema:'Valors', tags:['vídua','gerra','miracle','generositat'],
+    resum:'Una vídua pobra que comparteix el seu últim oli i el miracle que li succeeix.',
+    text:`<p>La vídua tenia dos fills i l'única cosa que li quedava era una gerra petita d'oli d'oliva. Tots els seus deutes s'havien acumulat i el creditor volia prendre's els fills com a esclaus si no pagava.</p>
+<p>Desesperada, va demanar ajuda al profeta Eliseu. Ell va preguntar: «Quin cosa tens a casa?» «Res, només una gerra d'oli.» Eliseu li va dir: «Ves i demana a les teves veïnes totes les gerres buides que puguin donar-te. Tanca't a casa i aboca l'oli a cada gerra.»</p>
+<p>La vídua, sense entendre res, va obeir. Va abocar l'oli de la seva gerra petita a la primera gerra gran... i l'oli no s'acabava. Gerra rere gerra, l'oli continuava sortint de la gerra petita fins que totes van ser plenes. L'oli es va acabar quan es va acabar l'última gerra buida.</p>
+<p>Va vendre l'oli, va pagar tots els deutes i va poder viure dignament amb els seus fills. I va aprendre que la fe i l'obediència obren camins que la raó no veu.</p>`
+  },
+  {
+    id:58, emoji:'🔮', title:'La Pilota de Cristall',
+    tema:'Màgia', tags:['pilota','tres fills','bruixa','alliberar'],
+    resum:'Tres germans busquen la pilota de cristall per alliberar una princesa.',
+    text:`<p>Una fada malèvola havia convertit la princesa en un gat i la tenia tancada en un castell encantat. Per alliberar-la calia trobar la Pilota de Cristall i deixar-la caure als peus de la princesa. Tres germans van sortir a buscar-la.</p>
+<p>El gran va ser transformat en àliga per la fada quan anava a la muntanya. El mitjà va ser convertit en balena quan creuava el mar. El petit, l'últim, va continuar sol.</p>
+<p>Va trobar dos gegants que es barallaven per un barret. «Qui el porta, pot anar on vulgui amb un pensament.» Va enganyar-los i se'l va quedar. Va pensar «al castell de la fada» i ja hi era.</p>
+<p>Al castell, el gat dormia a una sala. Va deixar caure la Pilota als seus peus i la princesa va tornar a ser ella mateixa. La fada, furiosa, es va apagar com una flama sense oxigen. Els dos germans es van tornar a transformar en persones i tots van tornar a casa feliços.</p>`
+  },
+  {
+    id:59, emoji:'🌊', title:'El Peix de les Tres Espines',
+    tema:'Enginy', tags:['peix','espines','desitjos','pesca'],
+    resum:'Un pescador que atrapa un peix que li concedeix tres desitjos a canvi de la llibertat.',
+    text:`<p>El pescador Andreu no havia pescat res en tres dies. La seva família tenia gana i ell ja estava a punt de tornar cap a casa quan la xarxa va pesar de sobte molt. Va treure del mar un peix enorme amb tres espines daurades a l'esquena.</p>
+<p>«Torna'm al mar i t'anomenaré un desig per cada espina!» Andreu va pensar en la seva família famolenca... però va pensar també en l'acord: tres desitjos valien molt. Va llençar el peix al mar.</p>
+<p>El peix va saltar tres cops i cada cop va cridar un desig: «Primera espina: la teva família no passarà mai més fam. Segona: la teva vella barca no s'enfonsarà mai. Tercera: viuràs tants anys com vulguis.»</p>
+<p>Andreu va tornar a casa i la taula estava plena de menjar, com per miracle. La barca va durar centenars d'anys. I ell va viure fins que va decidir que n'hi havia prou, i va tancar els ulls somrient.</p>`
+  },
+  {
+    id:60, emoji:'🌙', title:'El Príncep dels Estels',
+    tema:'Màgia', tags:['estel','príncep','planeta','amistat'],
+    resum:'Un petit príncep que viu en un planeta petit i descobreix el valor de les coses senzilles.',
+    text:`<p>En un planeta tan petit que en tres passos en feies la volta, hi vivia un príncep sol. Tenia una rosa que estimava molt i unes vistes de les postes de sol que ningú més del univers no podia veure igual. Però es va avorrir i va decidir visitar altres planetes.</p>
+<p>Va visitar un rei que no tenia ningú a qui manar, un vanidós que volia que tots l'admiresin, un borratxo que bevia per oblidar que bevia. Ningú no el va satisfer.</p>
+<p>A la Terra, va trobar una guineu. «Pots domesticar-me?» va demanar la guineu. «Significa crear llaços. La meva rosa serà única per a tu si li dediques temps.» El príncep va comprendre que la seva rosa era especial perquè ell l'havia estimada i cuidada.</p>
+<p>«Ara sé que al meu planeta hi tinc una rosa que em necessita. Estimo allà on tinc responsabilitats.» Va tornar a casa seva, al seu petit planeta, per regar la rosa. I va entendre que allò que fa especial una cosa és l'amor que hi poses.</p>`
+  },
+  {
+    id:61, emoji:'🦊', title:'La Guineu i les Uves',
+    tema:'Valors', tags:['guineu','uves','excuses','orgull'],
+    resum:'Una guineu que no pot arribar a les uves i diu que no les vol.',
+    text:`<p>Una guineu que tenia molta gana va descobrir un cep carregat d'uns raïms magnífics. «Quines uves tan grosses i madures!» Va saltar una vegada. Res. Va saltar dues vegades. Res. Tres, quatre, cinc vegades, però les uves eren massa altes.</p>
+<p>Exhausta i avergonyida per si algú la veia, va arreglar el pelatge i va marxar caminant lentament com si no li importés. En passar per on hi havia un conill, va dir en veu ben alta: «Total, aquelles uves eren verdes i agres. No les volia pas.»</p>
+<p>El conill la va mirar. «Però si brillaven de madures!» «Que en saps tu de uves», va respondre la guineu irritada, i va marxar. De tornada cap a casa, va trobar un raïm caigut a terra. Era dolcíssim.</p>
+<p>La guineu va entendre que hauria de buscar una altra manera d'arribar a les uves de dalt, en lloc d'inventar-se excuses. I que fingir que no volem allò que no assolim no fa que la nostra fam desaparegui.</p>`
+  },
+  {
+    id:62, emoji:'🏺', title:'Ali Babà i els Quaranta Lladres',
+    tema:'Aventura', tags:['cova','lladres','or','màgia','contrasenya'],
+    resum:'Ali Babà descobreix la cova dels lladres i la paraula màgica per entrar.',
+    text:`<p>Ali Babà era un pobre llenyataire que va veure per casualitat com una colla de quaranta bandits obria una cova amb les paraules: «Obre't, Sèsam!» Va guardar el secret i quan els lladres van marxar, va provar les paraules. La roca es va obrir.</p>
+<p>A dins hi havia or, joies i teles precioses acumulades durant anys de pillatge. Ali Babà va agafar el que podia portar i va tornar a casa. La seva cunyada Cassim va descobrir el secret i va entrar a la cova, però va oblidar la paraula per sortir i els lladres el van trobar.</p>
+<p>El cap dels lladres va planejar la venjança. Però la criada Mardana, astuta, va descobrir el pla i va salvar Ali Babà. Quan els lladres amagats en gerres d'oli van intentar sortir de nit, Mardana hi va llençar oli bullint. El cap es va disfressar de mercader, però Mardana el va reconèixer i el va matar ballant amb un ganivet.</p>
+<p>Ali Babà, agraït, va alliberar Mardana i li va donar una part del tresor. I va viure amb prosperitat i prudència.</p>`
+  },
+  {
+    id:63, emoji:'🌙', title:'Les Mil i Una Nits',
+    tema:'Imaginació', tags:['Xerazade','contes','sultan','nits'],
+    resum:'La reina dels contes que salva la seva vida explicant-los nit rere nit.',
+    text:`<p>El sultà Xahrayar, traït per la seva esposa, havia decidit casar-se cada nit amb una nova dona i matar-la al matí. Però Xerazade, filla del visir, va tenir una idea valenta: va demanar casar-se amb ell.</p>
+<p>La primera nit li va explicar un conte tan absorbent que quan va arribar l'alba, el conte no estava acabat. El sultà, que volia saber com acabava, va posposar l'execució un dia. Xerazade va continuar el conte i en va encadenar un altre.</p>
+<p>Nit rere nit, mil i una nits, Xerazade va anar teixint històries: aventures de pirates, contes de genies, històries d'amor i de màgia. El sultà no podia matar-la perquè volia sentir el final. I mentre escoltava, el seu cor s'anava suavitzant.</p>
+<p>Quan van arribar a la nit mil i una, el sultà havia canviat tant que va demanar a Xerazade que fos la seva reina de veritat. Ella havia guanyat amb el poder més gran del món: el poder dels contes.</p>`
+  },
+  {
+    id:64, emoji:'🐊', title:'El Cocodril i el Mico',
+    tema:'Enginy', tags:['cocodril','mico','riu','astúcia'],
+    resum:'Un mico astut escapa d\'un cocodril que el vol menjar.',
+    text:`<p>El mico i el cocodril eren amics, o ell creia que ho eren. El mico vivia a una figuera i cada dia llençava figues al cocodril que nedava al riu. Però la mare del cocodril volia menjar el cor del mico, que seria més dolç que les figues.</p>
+<p>El cocodril li va dir al mico que la seva mare estava malalta i el volia veure. «Puja a la meva esquena, t'hi porto.» A mig riu va dir la veritat: «Et portem a casa per menjar el teu cor.» El mico va pensar ràpid.</p>
+<p>«Oh, quin llàstima! He deixat el meu cor a l'arbre.Havia d'avisar-me!» El cocodril, estúpid, va creure'l i el va tornar a la riba. El mico va saltar a l'arbre i des de dalt va cridar: «Qui deixa el cor fora del pit? Ets el cocodril més beneit del riu!»</p>
+<p>El cocodril va quedar-se sol al riu, sense figues ni amic. I el mico va aprendre que l'amistat falsa sempre acaba traint-se sola.</p>`
+  },
+  {
+    id:65, emoji:'🌠', title:'La Princesa de la Lluna',
+    tema:'Màgia', tags:['lluna','princesa','bambú','Japó'],
+    resum:'Una princesa trobada dins un bambú que prové de la lluna.',
+    text:`<p>Un vell llenyataire va tallar un bambú i de dins en va sortir una nena minúscula que brillava com la lluna. La va criar amb la seva dona i va créixer fins a ser la dona més bonica del Japó. Tots els prínceps del país la volien per esposa.</p>
+<p>La princesa Kaguya posava a cada pretendent una prova impossible: que li portessin objectes llegendaris que no existien. Cap no va poder complir-ho. Fins i tot l'Emperador la va demanar. Ella va refusar amb respecte.</p>
+<p>La veritat era que ella procedia de la lluna i havia de tornar-hi. El nit de la lluna plena de tardor, una processó de llum va baixar del cel. «No puc tornar-hi!» va plorar Kaguya, estimant els seus pares adoptius. Però la llei de la lluna no es podia trencar.</p>
+<p>Va deixar al vell una nota i un pot de l'elixir de la immortalitat. Però el vell no en va beure: «A quina immortalitat haig de viure sense la meva filla?» Va cremar l'elixir al cim de la muntanya. I el fum va pujar fins a la lluna, on Kaguya plora cada nit plena.</p>`
+  },
+  {
+    id:66, emoji:'🌿', title:'El Fill Pròdig',
+    tema:'Valors', tags:['fill','pare','perdó','retorn'],
+    resum:'Un fill que marxha de casa malgastant la herència i torna penedit.',
+    text:`<p>Un home tenia dos fills. El petit va demanar la seva part de l'herència anticipada i va marxar a terres llunyanes. Hi va malgastar tots els diners en festes i excesos. Quan tot s'acabà, va venir una gran fam al país i ell no tenia res a menjar.</p>
+<p>Va trobar feina guardant porcs, i tenia tanta fam que hauria menjat el que menjaven ells. Va tornar en si: «Els criats del meu pare mengen millor que jo. Tornaré i li demanaré que m'admeti com a criat, no com a fill.»</p>
+<p>Quan el pare el va veure de lluny, va córrer a abraçar-lo. «Pare, he pecat. No sóc digne de ser el teu fill.» Però el pare va cridar els criats: «Porteu el millor vestit, l'anell i les sandàlies. Fem festa! El meu fill que estava perdut ha tornat.»</p>
+<p>El fill gran, que havia treballat sempre, es va queixar. El pare li va dir: «Fill, tu sempre has estat aquí i tot el meu és teu. Però era just celebrar: el teu germà estava mort i ha ressuscitat.» Perquè el perdó vertader no guarda rancúnia.</p>`
+  },
+  {
+    id:67, emoji:'🦉', title:'El Mussol Savi',
+    tema:'Valors', tags:['mussol','saviesa','animals','consell'],
+    resum:'Un mussol savi que ensenya als animals del bosc que menys paraules valen més.',
+    text:`<p>Al bosc hi havia un mussol vell que tots els animals consideraven el més savi. Un dia la guineu i el conill li van presentar una disputa: s'havien barallat sobre qui tenia dret a una determinada soca d'arbre.</p>
+<p>Cadascun explicà la seva versió amb moltes paraules i retrets. El mussol els va escoltar en silenci. La guineu parlava molt i fort. El conill gesticulava. El mussol esperava.</p>
+<p>Quan tots dos van acabar, el mussol els va mirar i va dir: «Tinc una pregunta per cadascun. Guineu: de qui és l'arbre? Conill: de qui és l'arbre?» Tots dos van quedar en silenci. «De tot el bosc», van acabar dient alhora.</p>
+<p>«Doncs l'heu resposta vosaltres sols», va dir el mussol, i va tancar els ulls. Els animals van entendre que a vegades les disputes es resolen no parland més, sinó fent les preguntes adequades. I que la saviesa no és parlar molt, sinó saber quan callar.</p>`
+  },
+  {
+    id:68, emoji:'🎁', title:'El Don de la Cigala',
+    tema:'Màgia', tags:['música','cigala','hivern','regal','generositat'],
+    resum:'Una cigala que regala la seva música malgrat la seva pobresa.',
+    text:`<p>Era l'hivern més fred en molts anys. La cigala, que havia cantat tot l'estiu sense guardar provisions, no tenia ni pa. Però tenia la seva veu, l'únic que ningú no li podia treure.</p>
+<p>Va anar de porta en porta. La formiga li va dir: «No puc donar-te res. A l'estiu cantaves, ara dansa.» La guineu li va demanar que li cantés a canvi d'un pa. La cigala va cantar tota la tarda i la guineu la va pagar.</p>
+<p>Aquell any l'hivern era trist al bosc: molts animals estaven malalts o deprimits. La cigala va anar a cada casa i va cantar. No demanava res a canvi. La seva veu omplia de calor les llars fredes. Els animals li donaven el que podien: molles, fulles seques per dormir, una mica de caliu.</p>
+<p>La cigala va sobreviure l'hivern gràcies a la seva música. Va aprendre que el do que Déu t'ha donat, si el comparteixes, sempre torna multiplicat.</p>`
+  },
+  {
+    id:69, emoji:'🌸', title:'La Flor de Neu',
+    tema:'Natura', tags:['flor','neu','hivern','miracle'],
+    resum:'La llegenda de la primera flor que va créixer sobre la neu.',
+    text:`<p>El primer gran hivern del món va durar molt més del que es pensava. La neu cobria tots els camps i les flors van desaparèixer. Els animals dormien i els ocells havien marxat cap al sud. La terra semblava morta.</p>
+<p>Una fada petita de la primavera va quedar-se enrere sense poder fugir. Estava atrapada sota la neu. Va cridar el Sol, però el Sol era molt lluny. Va cridar el Vent, però el Vent era massa fort i fred.</p>
+<p>Aleshores va decidir no esperar. Va posar tota la seva força i va empènyer la neu des de sota. Un brotonet verd va sortir primer, la fada es va estiricar i va obrir un pètal, dos, tres, quatre, sis pètals blancs com la neu mateixa.</p>
+<p>Era la primera galanthus, la flor de neu, la primera flor de l'any que creix fins i tot sota la neu. Quan la gent la veu, sap que la primavera és a prop. I la fada, cada any, torna a empènyer des de sota la terra gelada.</p>`
+  },
+  {
+    id:70, emoji:'🏺', title:'El Geni de la Làmpada',
+    tema:'Aventura', tags:['geni','làmpada','desitjos','Aladí'],
+    resum:'El jove Aladí troba una làmpada amb un geni que li concedeix desitjos.',
+    text:`<p>Aladí era un noi pobre que va ser enganyat per un mag perquè baixés a una cova plena de meravelles a buscar una làmpada vella. A la cova va agafar-la i va fregar-la sense saber res... i un geni enorme va aparèixer. «Sóc el geni de la làmpada. Et concedeixo el que demanis.»</p>
+<p>Aladí va demanar sortir de la cova, menjar, roba i finalment va veure la princesa Jasmine. S'enamorà d'ella i va demanar al geni que el presentés com a príncep. El geni va crear un palau i una processó reial.</p>
+<p>El mag va descobrir-ho i va robar la làmpada enganyant la princesa. Va traslladar el palau a l'Àfrica. Aladí tenia un altre anell màgic i el seu geni el va dur fins allà. Junts van recuperar la làmpada.</p>
+<p>Aladí havia promès al geni que el seu últim desig seria alliberar-lo. Malgrat tot el que necessitava, va complir la paraula. El geni, lliure per primera vegada en mil anys, va plorar d'alegria. I Aladí va aprendre que la paraula donada és el tresor més gran.</p>`
+  },
+  {
+    id:71, emoji:'🌿', title:'El Pastor i el Llop',
+    tema:'Valors', tags:['pastor','llop','mentides','cridar'],
+    resum:'El noi que cridava "llop" per broma fins que ningú no li va creure quan era veritat.',
+    text:`<p>Un jove pastor s'avorrida a les muntanyes tot sol amb les ovelles. Un dia va tenir una idea malèvola: va cridar «Llop! Llop!» ben fort. Els pagesos del poble van deixar la feina i van córrer amunt a ajudar-lo. Quan van arribar, el pastor reia. «Era una broma!»</p>
+<p>El van renyar però no van fer res més. L'endemà va tornar a cridar «Llop!» Altra vegada la gent va pujar i altra vegada era una broma. Van tornar a renyar-lo.</p>
+<p>Però el tercer dia, un llop de debò va atacar el ramat. El pastor va cridar amb totes les forces: «Llop! Llop! De debò!» Ningú no va venir. La gent pensava que era una altra broma. El llop va matar moltes ovelles i se'n va anar tranquil.</p>
+<p>El pastor va baixar al poble plorant. El vell llaurador li va dir: «El que menteix moltes vegades perd el crèdit fins i tot quan diu la veritat. Recorda-ho sempre.»</p>`
+  },
+  {
+    id:72, emoji:'🌺', title:'El Jardí de les Deliies',
+    tema:'Imaginació', tags:['jardí','paraís','imaginació','somnis'],
+    resum:'Un noi descobreix un jardí màgic que existeix entre la vigília i el somni.',
+    text:`<p>En Biel, cada nit just abans de dormir, sentia una olor de roses i terra mullada. Una nit, en comptes de tancar els ulls, va seguir l'olor per la seva cambra fins a una porta que mai no havia vist. L'oberta silenciosament.</p>
+<p>Al darrere hi havia un jardí que no acabava: arbres fruiters de totes les estacions alhora, estanys plens de llum, papallones de colors impossibles. El cel era totes les hores del dia alhora: alba, migdia i posta de sol barrejades.</p>
+<p>Un vell jardiner l'esperava. «Has trigat!» «On soc?» «Al jardí que tothom té. El qui para a imaginar.» En Biel va passar la nit jugant i descobrint racons. Quan l'alba va arribar, el vell va dir: «Pots tornar sempre que tanquis els ulls i escolts el silenci primer.»</p>
+<p>En Biel es va despertar amb les mans oloroses a roses. Des d'aleshores, mai no tenia por d'anar a dormir perquè sabia que el jardí l'esperava.</p>`
+  },
+  {
+    id:73, emoji:'🌊', title:'La Balena que Va Empassar en Jonas',
+    tema:'Llegenda', tags:['Jonàs','balena','Nínive','obediència'],
+    resum:'El profeta Jonàs que fuig de la seva missió i es troba dins d\'una balena.',
+    text:`<p>Déu va manar a Jonàs que anés a la gran ciutat de Nínive a anunciar que hauria de canviar els seus camins. Però Jonàs tenia por i en lloc d'obeir va embarcar-se en el primer vaixell que anava en sentit contrari.</p>
+<p>Al mar va esclatar una tempesta terrible. Els mariners, assustats, van llençar a sort per saber qui era el culpable. Va tocar a Jonàs. «Llenceu-me al mar i es calmarà», va dir ell, saben que era culpa seva per haver fugit.</p>
+<p>Van llençar-lo i immediatament el mar es va calmar. Jonàs s'enfonsava quan una balena enorme el va empassar. Dins la panxa de la balena, a les fosques, Jonàs va pregar durant tres dies i tres nits.</p>
+<p>Quan va acceptar la seva missió, la balena va arribar a la costa i el va escopir. Jonàs va anar a Nínive, va predicar i la gent es va penedir de debò. I va aprendre que de les nostres obligacions no se'n fuig tan fàcilment.</p>`
+  },
+  {
+    id:74, emoji:'🦁', title:'El Lleó Encantat',
+    tema:'Màgia', tags:['lleó','encanteri','princesa','amor'],
+    resum:'Una princesa que descobreix que el lleó del seu jardí és un príncep encantat.',
+    text:`<p>Al jardí del palau hi havia un lleó que vivia en una gàbia gran i tothom li tenia por menys la princesa Aura. Cada dia li portava carn i li parlava com si fos un amic. El lleó la mirava amb uns ulls tristos i intel·ligents.</p>
+<p>Una nit, la princesa va despertar-se sentint una veu suau. Provenia de la gàbia del lleó. Va apropar-se i va veure que el lleó tenia una llàgrima a la cara. «Pots parlar?» «Quan la lluna és plena, sí», va respondre el lleó.</p>
+<p>Li va explicar que un encanteri el tenia transformat. Només el trencaria si algú l'estimava de veritat sense saber que era un príncep. La princesa li va dir que l'estimava tal com era. En aquell instant, el lleó es va transformar en un jove príncep davant dels seus ulls.</p>
+<p>La princesa va quedar sorpresa, però el reconeixia pels seus ulls tristos i intel·ligents. Es van casar i van viure feliços, i la princesa sempre va dir que l'havia estimat primer quan era lleó i que això no havia canviat res.</p>`
+  },
+  {
+    id:75, emoji:'🌸', title:'La Princesa i el Pèsol',
+    tema:'Màgia', tags:['princesa','pèsol','llit','sensibilitat'],
+    resum:'Un príncep busca una princesa de veritat i la prova amb un pèsol sota el llit.',
+    text:`<p>El príncep volia casar-se amb una princesa de veritat, però com se sap si algú és una princesa autèntica? Van arribar joves de tot el món dient que ho eren, però quelcom sempre fallava.</p>
+<p>Una nit de tempesta va trucar a la porta del palau una jove empapada de pluja. Deia que era una princesa. La reina mare no va dir res, però va anar a la cambra d'hostes i va posar un pèsol sota vint matalassos i vint edredons de ploma.</p>
+<p>L'endemà al matí van preguntar a la jove com havia dormit. «Ai, malament! Havia quelcom dur sota el llit que no m'ha deixat dormir en tota la nit. Estic plena de blaus.»</p>
+<p>Ningú més que una princesa autèntica podia ser tan sensible. El príncep la va demanar en matrimoni i van viure feliços. I el pèsol va acabar en un museu com a testimoni de la prova. Avui dia, potser encara hi és.</p>`
+  },
+  {
+    id:76, emoji:'🎭', title:'Pinotxo',
+    tema:'Valors', tags:['nen de fusta','nas','mentida','Gepetto'],
+    resum:'Un nen de fusta que vol ser de veritat i aprèn el valor de la honestedat.',
+    text:`<p>El vell Gepetto va tallar un tros de fusta i va fer una titella que es podia moure sola. La va batejar Pinotxo. La fada blava li va donar vida i li va dir: «Si ets honest i bondadós, un dia et convertiràs en un nen de veritat.»</p>
+<p>Però Pinotxo era molt entremaliat i deia mentides. Cada vegada que mentia, el nas li creixia. Va faltar a l'escola, va anar al País dels Jocs on els nens es convertien en ases, i al final va acabar a la panxa d'una balena enorme, on va trobar el seu pare Gepetto que el buscava.</p>
+<p>Junts van aconseguir sortir de la balena. Gepetto era vell i malalt. Pinotxo el va cuidar, va anar a treballar per guanyar diners per a medicines, i va deixar d'enganyar i de mentir.</p>
+<p>Una nit, la fada blava va aparèixer mentre dormia: «Has demostrat que tens bon cor. A partir d'ara ets un nen de veritat.» Pinotxo es va despertar i va anar a despertar Gepetto abraçant-lo. Tots dos van plorar de felicitat.</p>`
+  },
+  {
+    id:77, emoji:'🐸', title:'El Príncep Granota',
+    tema:'Màgia', tags:['granota','príncep','estany','besar'],
+    resum:'Una granota que resulta ser un príncep encantat que espera el petó salvador.',
+    text:`<p>Al bosc hi havia un estany on vivia una granota especial. Era molt gran per ser granota, i semblava intel·ligent. La filla del moliner, que no tenia por dels animals, sovint s'hi asseia a llegir.</p>
+<p>Un dia la granota li va dir: «Pots besar-me?» La nena va riure. «Per a qué?» «Perquè m'han dit que si una nena de bon cor em besa, me'n vaig a altra banda.» La nena va pensar que era estrany però va agafar la granota amb cura i li va donar un petó suau al cap.</p>
+<p>Immediatament va sentir que la granota creixia entre les seves mans. En pocs segons, al seu davant hi havia un jove príncep que portava roba feta de llum d'estany. «Gràcies! Em tenia encantat una bruixa perquè un cop vaig ser cruel amb un gripau.»</p>
+<p>El príncep va convidar la nena i el seu pare al seu palau. No es van casar perquè eren massa joves, però van ser amics molt estimats durant anys. I el príncep va aprendre a no ser mai cruel amb cap ser viu, per petit que fos.</p>`
+  },
+  {
+    id:78, emoji:'🦅', title:'L\'Àguila i els Polls',
+    tema:'Valors', tags:['àguila','polls','valentia','aprendre a volar'],
+    resum:'Una mare àguila que ensenya als seus fills com volar empenyent-los del niu.',
+    text:`<p>Al cim de la muntanya, l'àguila havia construït un niu gran i sòlid. Dos aguilots havien nascut i la mare els portava menjar cada dia. Els polls estaven còmodes i no volien moure's del niu. Per qué volar si la mare ho portava tot?</p>
+<p>Però va arribar el dia en que la mare va deixar d'anar-hi. Es va quedar a un roure proper i els mirava. Els polls van cridar, van piar, van demanar. La mare no va moure's. Quan semblava que ja no aguantaven, van veure que la seva mare saltava de branca en branca sense cap pressa.</p>
+<p>Primer un, després l'altre, van estendre les ales. El primer salt era la cosa més aterradora del món. Però les ales van aguantar, el vent els va empènyer i van planear per sobre del bosc per primer cop.</p>
+<p>Quan van tornar al niu, la mare hi era. «Sabia que podíeu», va dir. «Però si hagués continuat portant-vos el menjar, hauria robat el que millor sabeu fer: volar.» Van entendre que l'amor verdader a vegades és deixar que els fills volin sols.</p>`
+  },
+  {
+    id:79, emoji:'🔑', title:'Les Tres Claus d\'Or',
+    tema:'Enginy', tags:['claus','tresor','fills','treball'],
+    resum:'Un pare en morir diu als fills que hi ha un tresor amagat al camp.',
+    text:`<p>Un pagès vell i savi tenia tres fills que no volien treballar la terra. Quan va sentir que s'acostava la mort, va cridar-los. «Al camp hi ha tres claus d'or amagades. Busqueu-les bé.» I va morir.</p>
+<p>Els tres fills van anar al camp i van cavar sense parar durant setmanes. Van girar cada pam de terra buscant les claus. No les van trobar, però la terra havia quedat tan ben llaurada i airejada que aquell any la collita va ser extraordinàriament abundant.</p>
+<p>Van vendre el blat i van guanyar molts diners. L'any següent van tornar a llaurar buscant les claus i altra vegada la collita va ser bona. I l'any de rere el mateix.</p>
+<p>Al cap de molts anys, un vell del poble els va dir: «El vostre pare era molt savi. No hi havia claus d'or. Les claus eren vosaltres mateixos, i el tresor era la terra ben treballada.» Els tres germans van riure i van comprendre el llegat del seu pare.</p>`
+  },
+  {
+    id:80, emoji:'🌊', title:'La Sirena de la Costa Brava',
+    tema:'Llegenda', tags:['sirena','mar','pescadors','Costa Brava'],
+    resum:'La llegenda de la sirena que protegeix els pescadors de la Costa Brava.',
+    text:`<p>Els pescadors de la Costa Brava explicaven als fills que hi havia una sirena que vivia entre les roques de cap Norfeu. No era ferotge ni perillosa: era la guardiana dels pescadors. Quan s'acostava un temporal, la podien veure asseguda a una roca fent senyals amb la cua daurada.</p>
+<p>En Miquel, un pescador jove i escèptic, va sortir un matí malgrat les advertències dels vells: «Hi ha senyal de la sirena, no sortis.» Ell va riure i va llançar les xarxes. Al cap d'una hora, una tempesta sobtada va agafar la barca.</p>
+<p>Quan ja no veia el port, una figura lluminosa va néixer de l'escuma a proa de la barca. La sirena el va guiar cap a una cala arrecerada on va passar el temporal sense perill. A l'alba, havia desaparegut.</p>
+<p>En Miquel va tornar al port i mai més no va sortir a pescar quan els vells havien vist la senyal. I cada any de la festa major llençava un ram de flors al mar com a agraïment.</p>`
+  },
+  {
+    id:81, emoji:'🌿', title:'L\'Arbre Generós',
+    tema:'Valors', tags:['arbre','nen','donar','estimació'],
+    resum:'Un arbre que dóna tot el que té a un nen que estima, fins a quedar-se en un tocó.',
+    text:`<p>Hi havia un arbre que estimava molt un nen. Quan el nen era petit, pujava a les branques, menjava les pomes i jugava a l'ombra. L'arbre era feliç. Però el nen va anar creixent i cada vegada que tornava, demanava alguna cosa.</p>
+<p>«Necessito diners.» L'arbre li va dir: «Agafa les meves pomes i ven-les.» El nen ho va fer. Anys després: «Necessito una casa.» «Talla les meves branques i fes-te-la.» El nen ho va fer. Anys més tard: «Necessito viatjar.» «Talla el meu tronc i fes-te una barca.» El nen ho va fer. L'arbre es va quedar en un tocó.</p>
+<p>Un dia va tornar un vell cansat. L'arbre va dir: «Ho sento, no tinc res més a donar-te.» «Ara ja no necessito res. Necessito descansar.» «Doncs un tocó vell és el millor per descansar-hi», va dir l'arbre. L'home es va asseure i l'arbre va ser feliç de nou.</p>
+<p>L'arbre va donar tot el que tenia i va ser feliç fent-ho. No perquè rebia, sinó perquè estimava.</p>`
+  },
+  {
+    id:82, emoji:'🎶', title:'El Cant dels Ocells',
+    tema:'Natura', tags:['ocells','música','alba','natura'],
+    resum:'La llegenda de com els ocells van aprendre a cantar a l\'alba.',
+    text:`<p>Explica la llegenda que al principi del món, els ocells no cantaven. Volaven en silenci i el bosc de matí era mut com la nit. El sol sortia sense cap benvinguda i les flors s'obrien sense música.</p>
+<p>Un dia el sol, que es sentia sol en la seva feina de cada matí, va demanar als ocells: «No em podríeu acompanyar? El silenci de l'alba és massa pesat per a mi.» Però els ocells no sabien com fer-ho.</p>
+<p>Una mica de la llum del sol va entrar en el pit d'un ocell petit i vermell. Aquella llum li va escalfar el cor i de la gola li va sortir un so: un triol, dos, tres notes. Era el primer cant d'ocell del món.</p>
+<p>Els altres ocells van veure que podia fer-se i van intentar-ho. Cada espècie va trobar el seu so. I des d'aleshores, cada matí, els ocells donen la benvinguda al sol perquè saben que sense ell, no tindrien la llum dins el pit per cantar.</p>`
+  },
+  {
+    id:83, emoji:'🧙', title:'El Mag i l\'Aprenent',
+    tema:'Màgia', tags:['mag','aprenent','espanta','màgia','conseqüències'],
+    resum:'Un aprenent de mag que usa la màgia del mestre sense saber-ne les conseqüències.',
+    text:`<p>El mag Melquior tenia un aprenent, en Pau, que netejava el taller i portava l'aigua. Quan el mag va sortir, en Pau va veure l'escombra al racó. «La màgia del mestre pot animar l'escombra a portar ella sola l'aigua!»</p>
+<p>Va recitar l'encanteri i l'escombra va néixer a vida. Va córrer a omplir galledes i galledes. Però en Pau no sabia l'encanteri per aturar-la. Quan el dipòsit va estar ple, l'escombra va continuar. L'aigua va inundar el taller. En Pau va partir l'escombra en dos amb una destral: ara eren dues escombres que portaven el doble d'aigua.</p>
+<p>El taller s'inundava quan el mag va aparèixer. Amb un gest, va aturar tot. Va mirar l'aprenent. «Mestre, ho sento.» El mag va assecar tot amb un altre gest. «No has après res de màgia? La màgia sense coneixement és un riu sense llera: no es pot controlar.»</p>
+<p>En Pau mai més va tocar cap encanteri del mestre sense el seu permís.</p>`
+  },
+  {
+    id:84, emoji:'🦊', title:'La Guineu i el Corb II: El Roc',
+    tema:'Enginy', tags:['guineu','corb','pedra','astúcia'],
+    resum:'La guineu necessita l\'ajuda del corb per moure una pedra, però el corb recorda la lliçó passada.',
+    text:`<p>Temps après de l'episodi del formatge, la guineu es va trobar en un problema: necessitava moure una pedra grossa per entrar a una cova on havia vist un conill. No podia sola. Va buscar el corb.</p>
+<p>«Corb, necessito la teva ajuda!» El corb, recordant el formatge, la va mirar de cua d'ull. «Per qué hauria d'ajudar-te?» «Perquè si m'ajudes, et porto gallines del mas del costat.» El corb va pensar. «Primer les gallines, després la pedra.»</p>
+<p>La guineu, sense altra opció, va haver de prometre primer i complir primer. Va anar a buscar les gallines (cosa que li va costar molt) i les va deixar al peu de l'arbre del corb. El corb, satisfet, va volar fins a la pedra i va ajudar amb l'ala i el bec a moure-la.</p>
+<p>El conill havia fugi, però la guineu va aprendre que la persona que has enganyat un cop et demanarà garanties la propera vegada. I el corb va aprendre que fins i tot l'adversari pot ser útil si es gestiona bé.</p>`
+  },
+  {
+    id:85, emoji:'🌸', title:'El Príncep de les Roses',
+    tema:'Màgia', tags:['roses','príncep','hivern','amor'],
+    resum:'Un príncep que fa florir les roses a l\'hivern per amor a una jove.',
+    text:`<p>El príncep Artau tenia el poder de fer créixer les roses en qualsevol estació. L'any que va conèixer la Cèlia, filla d'un jardiner, era plena nevada. Ella li va dir: «Enyoro les roses de l'estiu.» L'endemà, el jardí de casa seva estava ple de roses vermelles sobre la neu.</p>
+<p>La Cèlia no sabia qui havia fet el miracle. Cada setmana nous rams de roses apareixien als peus del seu jardí. Va intentar descobrir qui les posava. Una nit, amagada darrere un arbre, va veure arribar una figura que anava tocant la neu amb una vareta.</p>
+<p>Les roses emergien com si la neu fos primavera. «Qui ets?» va preguntar la Cèlia. El príncep no va saber fugir. Li va explicar el seu do i el seu amor. La Cèlia, que ja estimava aquells missatges de roses sense saber-ne l'autor, el va mirar als ulls i va veure que era el seu cor qui li havia estat escrivint.</p>
+<p>Es van casar a la primavera, quan les roses floriren elles soles sense necessitat de cap màgia.</p>`
+  },
+  {
+    id:86, emoji:'🌊', title:'La Barca de Pedra',
+    tema:'Llegenda', tags:['sant','barca','pedra','miracle'],
+    resum:'La llegenda del sant que va arribar a les costes catalanes en una barca de pedra.',
+    text:`<p>Conta la llegenda que un sant ermità fugia de les persecucions i va arribar a la costa mediterrània sense cap embarcació. Va pregar llargament i quan va obrir els ulls, una barca de pedra l'esperava a la riba. Tothom que ho va veure es va quedar bocabadat.</p>
+<p>Va navegar tota la nit en aquella barca impossible i va arribar a una cala arrecerada de la costa catalana. Allà va desembarcar i la barca de pedra es va enfonsar sola. Va construir una petita ermita al cim del turó i va viure molts anys curant malalts i ajudant els pobres.</p>
+<p>Quan va morir, al lloc on havia desembarcat van trobar al fons del mar la barca de pedra, intacta. La van pujar i la van posar davant de l'ermita. Allà va romandre durant segles com a testimoni del miracle.</p>
+<p>Cada any, els pescadors de la cala feien una processó marítima fins al lloc on el sant havia desembarcat i llençaven flors al mar en el seu honor.</p>`
+  },
+  {
+    id:87, emoji:'🔮', title:'El Mirall de les Veritats',
+    tema:'Valors', tags:['mirall','veritat','rei','vanitat'],
+    resum:'Un rei troba un mirall que mostra la veritat de les persones i aprèn una dura lliçó.',
+    text:`<p>El rei Baldiri va trobar en una plaça un mirall que un mag havia deixat. Era diferent dels altres: no mostrava el reflex de com eres per fora, sinó com eres per dins. Un home aviu apareixia al mirall com una criatura esquifida. Una vella bondadosa apareixia radiant i jove.</p>
+<p>El rei, orgullós de la seva corona i el seu poder, es va mirar... i va veure una persona mediocre i asustada. Va treure el mirall de la plaça i el va amagar. «Aquell mirall menteix!»</p>
+<p>Però no podia deixar de pensar en el que havia vist. Poc a poc va anar canviant: va escoltar els pobres, va ser just en els judicis, va demanar perdó per errors antics. Un any després va anar a buscar el mirall amagat i es va tornar a mirar.</p>
+<p>Aquesta vegada va veure un home decent, no perfecte, però que s'esforçava. Va somriure per primera vegada en molt temps. El mirall no mentia: mostrava el que podíem ser si ens atrevíem a veure'ns de veritat.</p>`
+  },
+  {
+    id:88, emoji:'🎪', title:'El Saltimbanqui de la Lluna',
+    tema:'Imaginació', tags:['saltimbanqui','lluna','màgia','espectacle'],
+    resum:'Un saltimbanqui que fa espectacles a la llum de la lluna que tenen poders especials.',
+    text:`<p>El saltimbanqui Llorenç no feia espectacles de dia com els altres. Esperava la nit i en concret les nits de lluna plena. Deia que la llum de la lluna donava un poder especial als seus malabars i acrobàcies.</p>
+<p>La gent del poble el consideraven excèntric. Però els que l'havien vist actuar de nit deien coses estranyes: que les pilotes que llençava pujaven molt amunt i tardaven massa a baixar. Que quan saltava semblava que la lluna l'aguantava un moment.</p>
+<p>Una nit de Sant Joan, va fer el seu espectacle al prat i mig poble va assistir. Va llençar tres anelles cap amunt i van quedar-se suspeses al cel com a noves estrelles. Tothom va alçar els ulls. Quan va cridar «tornen!» van baixar soles a les seves mans.</p>
+<p>Ningú no va saber mai si era màgia o habilitat extraordinaria. Però cada nit de lluna plena, si escoltaves bé, podies sentir les campanes de les anelles del saltimbanqui Llorenç al vent.</p>`
+  },
+  {
+    id:89, emoji:'🌿', title:'La Planta que Parlava',
+    tema:'Natura', tags:['planta','parlar','secrets','natura'],
+    resum:'Una planta que confia secrets antics a la nena que la rega cada dia.',
+    text:`<p>La iaia li va dir a la Roser: «Aquesta planta és molt antiga. Si la regues i l'estimes, un dia et contarà els seus secrets.» La Roser tenia vuit anys i va prendre la responsabilitat molt seriosament.</p>
+<p>Cada matí li portava una mica d'aigua, l'espolsava les fulles i li parlava. Li explicava com li havia anat el dia, els problemes de l'escola i els somnis de la nit. La planta no deia res, però les seves fulles semblaven més verdes quan la nena hi era.</p>
+<p>Un matí de primavera, la Roser va escoltar un murmuri suau. Va creure que era el vent, però no n'hi havia. El murmuri deia: «Aquí on sóc vaig veure la teva besàvia plorar, el teu avi demanar-li matrimoni, la teva mare néixer. Sóc la memòria de la família.»</p>
+<p>La Roser va quedar-se paralitzada. Va córrer a dir-ho a la iaia. «Ho sabia», va dir ella. «Per això t'hi vaig posar a càrrec. Les plantes estimades guarden el que els homes obliden.»</p>`
+  },
+  {
+    id:90, emoji:'🌙', title:'El Noi que Comptava Estrelles',
+    tema:'Imaginació', tags:['estrelles','nit','somnis','ciència'],
+    resum:'Un noi que s\'obsessiona comptant estrelles i descobreix una cosa increïble.',
+    text:`<p>En Marc es negava a anar a dormir perquè volia comptar totes les estrelles del cel. Cada nit posava una ratlla en un quadern per cada estrella que comptava, però sempre les perdia de compte i havia de tornar a començar.</p>
+<p>El seu avi, que havia estat mariner, li va dir: «No les podràs comptar totes. Però pots aprendre a conèixer-les pel nom.» Li va ensenyar les constel·lacions: l'Óssa Major, Cassiopea, Orió. I li va ensenyar que les estrelles marines servien per saber on ets al mig del mar.</p>
+<p>En Marc va aprendre que el cel era com un mapa. I que cada estrella tenia un nom perquè els humans havien volgut fer-les seves, donar-los un lloc a la memòria. «Les estrelles ens miren des de fa milions d'anys», va dir l'avi. «Nosaltres som nous aquí.»</p>
+<p>En Marc va deixar de comptar i va començar a escoltar. Cada estrella li semblava una veu antiga que tenia coses a dir. Va dormir somiant en viatges per l'espai.</p>`
+  },
+  {
+    id:91, emoji:'🦊', title:'La Guineu que Va Perdre la Cua',
+    tema:'Valors', tags:['guineu','cua','orgull','excuses'],
+    resum:'Una guineu que perd la cua en un parany i intenta convèncer les altres que estan millor sense.',
+    text:`<p>La guineu Marta, la més orgullosa del bosc, va quedar atrapada en un parany i va haver de deixar-se la cua per alliberar-se. Va tornar al bosc avergonyida. Quan les altres guineus la van veure, es van riure.</p>
+<p>La Marta es va posar a la defensiva. «De fet», va dir, «les cues fan nosa. Pesam, enganxen als matolls, el fred les congela. Jo estic millor sense.» Les guineus joves la van escoltar. «De veritat?» «Sí! Hauríeu de tallar-vos les vostres cues.»</p>
+<p>Una guineu vella la va aturar: «Marta, si les cues fessin nosa, tu no ens ho estaries proposant ara que has perdut la teva. Ens ho proposaries si la tinguessis.» Silenci. Totes les guineus van entendre la trampa.</p>
+<p>La Marta va abaixar el cap. «Tens raó. La vaig perdre i em fa vergonya. Ho sento.» La guineu vella li va dir: «La honradesa et queda millor que qualsevol cua.» Des d'aleshores la Marta es va tornar més sincera i menys orgullosa.</p>`
+  },
+  {
+    id:92, emoji:'🌺', title:'El Tresor del Mas Vell',
+    tema:'Aventura', tags:['tresor','mas','nens','recerca'],
+    resum:'Dos cosins que troben un vell mapa i busquen el tresor d\'un mas abandonat.',
+    text:`<p>La Laia i el seu cosí Marc van trobar, amagat darrere un retrat vell de la casa dels avis, un mapa dibuixat a mà. Mostrava el mas vell abandonat del turó i marcava un punt amb una creu vermella. «Tresor», posava en lletres antigues.</p>
+<p>Van demanar permís als avis i van pujar al mas. Era una tarda de tardor i les fulles daurades del voltant feien tot més misteriós. Van seguir el mapa: catorze passes des de la porta, girar a la dreta, arribar a la pedra gran en forma de cor.</p>
+<p>La pedra existia. Sota hi havia una caixa de ferro enrossida. Dins, no hi havia or ni joies: hi havia fotografies antigues, cartes lligades amb un llaç vermell i un rellotge de butxaca. I una nota: «Per al qui trobi aquest tresor: el tresor d'una família no és l'or, sinó la memòria.»</p>
+<p>Van portar la caixa als avis. El besavi la va obrir i va plorar: «Eren els records del meu pare.» Van passar la tarda mirant les fotos i els avis explicant la història familiar. Era el millor tresor que podien trobar.</p>`
+  },
+  {
+    id:93, emoji:'🎨', title:'El Pintor de Somnis',
+    tema:'Imaginació', tags:['pintor','somnis','colors','màgia'],
+    resum:'Un pintor que pinta els somnis de la gent mentre dormen.',
+    text:`<p>Al carreró dels artistes hi havia un taller sempre tancat de dia. Ningú no havia vist el pintor sortir a la llum del sol. Però de nit, quan la gent dormia, per sota la porta sortia una llum daurada i es sentien pinzells lliscant suaument.</p>
+<p>La nena Neus, que sovint s'alçava a la nit a beure aigua, va veure aquella llum i va trucar suaument. La porta es va obrir sola. A dins hi havia el pintor: un home vell amb els ulls clars com l'aigua i les mans taques de tots els colors.</p>
+<p>Les parets eren plenes de quadres que mostraven llocs meravellosos. «Aquests els he somiat jo?» «Sí», va dir el pintor. «Pinto els somnis de tot el barri mentre dormiu, per no oblidar-los.» «I qui pinta els vostres somnis?» va preguntar la nena. El pintor va riure: «Tu, ara que m'has vist, em somiaràs.»</p>
+<p>I cada nit, la Neus somniava el taller del pintor. I cada matí, en llevar-se, recordava els colors una mica millor que el dia anterior.</p>`
+  },
+  {
+    id:94, emoji:'🌊', title:'L\'Illa dels Ocells',
+    tema:'Natura', tags:['illa','ocells','marinera','natura'],
+    resum:'Una pescadora que descobreix una illa secreta habitada per ocells parlants.',
+    text:`<p>La pescadora Teresa sortia a mar cada matí. Un dia de boira espessa va perdre l'orientació i va arribar a una illa que no apareixia en cap mapa. La vegetació era tan frondosa que semblava un jardí. I estava plena d'ocells de colors impossibles.</p>
+<p>Un lloro verd la va saludar en perfecte català: «Bon dia, Teresa.» Ella va quedar glaçada. «Saps el meu nom?» «Sabem el nom de tots els que arriben aquí.» Els ocells, va descobrir, eren la memòria del mar: recordaven tots els nàufrags, tots els vaixells, totes les tempestes.</p>
+<p>«Pots demanar-nos alguna cosa», va dir el lloro. Teresa va pensar en el seu marit pescador que havia desaparegut feia un any. «Sap algú on és?» Un colom gris va dir: «Viu, a una illa del sud. Va ser recollit per uns comerciants.» Li van explicar com trobar-lo.</p>
+<p>Teresa va tornar a la seva barca. Va seguir les indicacions dels ocells i a les tres setmanes va trobar el seu marit. L'illa no va tornar a aparèixer mai a la boira, però Teresa la va buscar sempre que sortia a mar.</p>`
+  },
+  {
+    id:95, emoji:'🌙', title:'El Vigilant de la Nit',
+    tema:'Imaginació', tags:['nit','velar','son','somnis'],
+    resum:'L\'ésser que vetlla els somnis dels nens mentre dormen.',
+    text:`<p>Hi ha qui diu que cada nit, quan els nens s'adormen, apareix el Vigilant de la Nit. No se'l pot veure perquè és fet de la mateixa obscuritat, però és càlid com un abraçada de manta. Porta els somnis bons en un sac de seda i els dolents en una altra bossa que tanca amb set nusos.</p>
+<p>El Vigilant sap quin nen ha tingut un dia difícil i li posa el somni més alegre que té. Sap quin nen s'ha portat malament i li posa el somni que li ensenya la millor manera d'arreglar-ho sense que sembli una lliçó.</p>
+<p>Si alguna vegada et desperts d'un malsón, és que s'ha escapat una mica d'una bossa mal lligada. Però el Vigilant se n'adona, torna ràpid i te'l canvia per un de millor. Per això quan tornes a adormir, la cosa ja és diferent.</p>
+<p>Diuen que la manera de fer sortir el Vigilant és respirar fondo tres cops i pensar en quelcom que estimes molt. Llavors ell sap on ets i ve corrents.</p>`
+  },
+  {
+    id:96, emoji:'🎵', title:'La Nana dels Pirineus',
+    tema:'Natura', tags:['Pirineus','nana','muntanya','son'],
+    resum:'La cançó de bressol que les mares pirinenques cantaven per adormir els fills.',
+    text:`<p>A les valls dels Pirineus, on les nits d'hivern són llargues i la neu cobreix els pobles per mesos, les mares tenien una cançó especial per adormir els fills. No era qualsevol nana: era la cançó que les muntanyes mateixes murmuraven als llargs hiverns.</p>
+<p>Deien que la cançó la va aprendre la primera pastora del Pirineu d'un esperit de la muntanya. Havia pujat a buscar una ovella perduda i en la boira havia sentit una veu profunda i suau com el so d'un arbre molt vell. Quan va baixar, la portava al cor.</p>
+<p>La lletra parlava de la neu que cau suau, de la lluna que il·lumina els cims, dels llops que dormen amb els seus llobatons, dels rius que descansen sota el gel. Tot el món de la nit que es posa a dormir alhora.</p>
+<p>Diuen que si cantes aquella nana a un nen inquiet, de seguida se li pesen els ulls. Perquè les paraules porten dintre la son de totes les nits de muntanya que hi ha hagut des del principi del món.</p>`
+  },
+  {
+    id:97, emoji:'🌸', title:'La Fada Tardor',
+    tema:'Natura', tags:['tardor','fada','fulles','colors'],
+    resum:'La fada que cada any pinta les fulles dels arbres amb els colors de la tardor.',
+    text:`<p>Cada any, quan l'estiu comença a cansar-se, arriba la Fada Tardor. Ve del nord amb una bossa plena de pinzells i pots de color. Groc de pera, vermell de magrana, marró de castanya, taronja de carbassa. Treballa de nit per no ser vista.</p>
+<p>Va d'arbre en arbre i pinta cada fulla amb cura. No n'hi ha cap d'igual: fins i tot a un sol arbre, cada fulla té la seva combinació única de colors. Treballa tota la nit i se'n va abans que l'alba reveli el seu secret.</p>
+<p>Un nen curiós, l'Arnau, va quedar-se despert una nit de finals de setembre amb la finestra oberta. Va veure la llum que es movia entre els arbres del jardí i va baixar al jardí. La Fada Tardor el va veure però no va fugir.</p>
+<p>«Vols ajudar?» Li va donar un pinzell. Aquell any, una branca del cirerer del jardí tenia les fulles de colors molt especials. I l'Arnau sabia que les havia pintat ell.</p>`
+  },
+  {
+    id:98, emoji:'🌙', title:'La Lluna i el Llop',
+    tema:'Natura', tags:['llop','lluna','udolar','amor'],
+    resum:'La llegenda de per qué els llops udulen a la lluna plena.',
+    text:`<p>Fa molts i molts anys, un llop solitari caminava per les muntanyes nevades una nit d'hivern. Estava tan sol que s'asseia a les roques i mirava el cel. Una nit de lluna plena, la lluna li semblava tan bonica i propera que li van sortir unes llàgrimes que van quedar-se gelades.</p>
+<p>Va obrir la boca per dir alguna cosa, però no sabia parlar. Li va sortir un udol llarg i profund, el primer udol d'un llop al món. I el so va pujar cap al cel i va arribar a la lluna, que el va sentir i es va posar a brillar una mica més.</p>
+<p>Des d'aleshores, els llops udulen a la lluna plena. No és per fer por: és perquè diuen a la lluna que és bonica i que no es troba sol quan ella hi és. La lluna correspon brillant amb tota la seva força.</p>
+<p>Per això les nits de lluna plena, si escolteu els udols des de les muntanyes, hi sentireu quelcom que s'assembla a una cançó d'amor molt antiga.</p>`
+  },
+  {
+    id:99, emoji:'⭐', title:'L\'Estel Caigut',
+    tema:'Màgia', tags:['estel','desig','caure','màgia'],
+    resum:'Quan cau un estel, és perquè un nen ha demanat un desig.',
+    text:`<p>Els avis diuen que quan veus caure un estel, no és un accident: és un estel que ha decidit baixar a la terra per complir el desig que li has demanades. Per això has de tancar els ulls i demanar-ho de seguida, abans que l'estel toqui el terra.</p>
+<p>Diuen que els estels que cauen se'ls queda el mar. Per eso les nits de gran pluja de llàgrimes de Sant Llorenç, els pescadors de la costa troben pedres brillants a la riba que no hi havien el dia anterior. Pedres de llum freda, dures com el diamant i llises com l'aigua.</p>
+<p>Una nena que va trobar una d'aquelles pedres la va portar a casa i la va deixar a la finestra. Aquella nit va somiar el que havia demanat quan va veure l'estel caure: que el seu avi malalt es posés bé. I l'endemà, quan va baixar a esmorzar, l'avi estava assegut a taula somrient.</p>
+<p>La pedra havia desaparegut. Havia tornat al cel, on la seva feina estava feta.</p>`
+  },
+  {
+    id:100, emoji:'🌙', title:'Bona Nit, Món',
+    tema:'Son', tags:['dormir','nit','somnis','dolç'],
+    resum:'El conte final per adormir, quan tots els éssers del món es posen a dormir.',
+    text:`<p>Quan el sol s'acomiad darrere les muntanyes i el cel es tenyeix de rosa i violeta, el món sencer comença a preparar-se per dormir. Les flors tanquen els seus pètals, els ocells deixen de cantar i van als nius, els peixos busquen les roques del fons.</p>
+<p>Les mamàs dels llops adormen els llobatons. Els óssos s'enrosquen a les coves. Les abelles tanquen els rucs. Les vaques es tomben als camps. Els gats s'enrosquen a les llars de foc. I els nens, un per un, tanquen els ulls.</p>
+<p>La lluna puja al seu lloc al cel i pren el torn del sol. Les estrelles apareixen, primer tímidament, després en milers. El vent es queda quiet. L'herba reposa. Les pedres descansen del calor del dia.</p>
+<p>I tu, que has escoltat tants contes i has viatjat tan lluny amb la imaginació, ara és el teu torn de descansar. Tanca els ulls. Respira a poc a poc. Els somnis t'esperen. Bona nit.</p>`
+  },
+  // Contes addicionals 101-110
+  {
+    id:101, emoji:'🐻', title:'Blancaneus i els Tres Óssos',
+    tema:'Aventura', tags:['óssos','porridge','casa','nena'],
+    resum:'Una nena que entra a la casa dels tres óssos mentre no hi són.',
+    text:`<p>Hi havia tres óssos: el papà ós, la mamà óssa i el bebè ós. Un matí, mentre el porridge es refredava, van sortir a passejar pel bosc. Mentre eren fora, una nena de cabells daurats va trobar la seva casa.</p>
+<p>Va provar el porridge del papà: massa calent. El de la mamà: massa fred. El del bebè: just bé, i se'l va menjar tot. Va seure a les cadires: la del papà massa gran, la de la mamà massa dura, la del bebè perfecta, però es va trencar.</p>
+<p>Cansada, va pujar a les habitacions. El llit del papà massa dur, el de la mamà massa tou, el del bebè perfecte. S'hi va adormir. Quan van tornar els óssos, van veure el porridge menjat, la cadira trencada i... la nena dormint!</p>
+<p>La nena es va despertar, va veure tres óssos mirant-la i va sortir corrents per la finestra. Mai més va entrar a cases de desconeguts sense demanar permís, i els óssos van fer servir clau des d'aleshores.</p>`
+  },
+  {
+    id:102, emoji:'🌹', title:'La Rosa Blanca i la Rosa Vermella',
+    tema:'Màgia', tags:['roses','germanes','ós','bondad'],
+    resum:'Dues germanes de cor diferent, una que estima un ós que resulta ser un príncep.',
+    text:`<p>Dues germanes vivien amb la seva mare: la Neus, bondadosa i tranquil·la com una rosa blanca, i la Roig, alegre i atrevida com una rosa vermella. Un hivern, un ós gran els va trucar a la porta demanant escalfor. La mare va acceptar-lo i l'ós va passar l'hivern a casa com un membre de la família.</p>
+<p>Les nenes jugaven amb ell, li pentinaven la pell, el feien riure. Però a la primavera va marxar sense explicar per on havia d'anar. La Neus va plorar en secret.</p>
+<p>Mesos més tard, les germanes van trobar un nan malhumorat enganxat a un arbre. El van alliberar. El nan, desagraït, les va insultar. Llavors va aparèixer l'ós, que va perseguir el nan. En aquell moment el nan va quedar transformat en un home lletjo que fugia, i l'ós en un príncep jove i bonic.</p>
+<p>El nan l'havia encantat per robar-li els tresors. Les dues germanes van acompanyar el príncep i es van casar: la Neus amb el príncep i la Roig amb el seu germà. Van viure feliços amb les seves dues roses al jardí.</p>`
+  },
+  {
+    id:103, emoji:'🎠', title:'El Cavall de Vapor',
+    tema:'Imaginació', tags:['vapor','màquina','nen','futur'],
+    resum:'Un nen del segle XIX que imagina màquines màgiques i acaba sent inventor.',
+    text:`<p>En l'època en que el vapor començava a moure les màquines, el petit Ramon somiava que un dia les màquines farien tot el que la gent feia a mà. El seu pare, ferrer, reia: «Les màquines mai no podran fer el que fan les mans d'un home.»</p>
+<p>Ramon passava hores al taller observant com el vapor empenyia els pistons, com les rodes giraven. Va dibuixar màquines que no existien: unes que cosien soles, unes que escrivien i fins i tot una que volava com un ocell de ferro.</p>
+<p>El mestre de l'escola el va animar. «Aquests dibuixos mostren una ment que veu el futur.» Ramon va estudiar molt, va patir moltes decepcions, però mai va deixar de dibuixar les seves màquines.</p>
+<p>Quan va ser gran, una de les seves invencions va guanyar un premi a Barcelona. Al costat de la màquina va penjar el dibuix que havia fet de nen. «Tot va comenzar aquí», va dir al seu pare, que per primer cop el va mirar amb orgull.</p>`
+  },
+  {
+    id:104, emoji:'🦄', title:'L\'Últim Unicorn',
+    tema:'Màgia', tags:['unicorn','màgia','mar','llibertat'],
+    resum:'L\'últim unicorn del món que busca els seus semblants i descobreix la seva naturalesa.',
+    text:`<p>L'últim unicorn vivia en un bosc encantes i no sabia que era l'últim. Un dia va sentir dos humans parlar: «Els unicorns han desaparegut. El Rei Roig els va capturar tots.» L'unicorn va marxar a buscar els seus semblants.</p>
+<p>Pel camí va trobar la bruixa Momiagossa que la va capturar per al seu circ. Un mag vell la va alliberar. El mag i la seva amiga van acompanyar l'unicorn fins al castell del Rei Roig, al cap d'una punta rocosa sobre el mar.</p>
+<p>El Rei Roig tenia el poder d'un toro de foc que foragitava tots els unicorns cap al mar. L'unicorn va haver d'enfrontar-se al toro i durant un moment aterrador va sentir por. La por li va ensenyar el que mai havia sentit: que la vida tenia valor perquè podia perdre's.</p>
+<p>Va vèncer el toro. Els unicorns van sortir de la mar i van tornar als boscos del món. L'últim unicorn, ara ja no l'últim, va triar quedar-se en el record d'allò que havia viscut, perquè l'experiència l'havia fet diferent. I més sabia.</p>`
+  },
+  {
+    id:105, emoji:'🌾', title:'El Molí de Vent',
+    tema:'Enginy', tags:['molí','vent','farina','invent'],
+    resum:'La llegenda de l\'invent del primer molí de vent per un pagès genial.',
+    text:`<p>Al poble de la plana ventosa, triturar el gra era un treball esgotador que requeria hores de feina manual. Un pagès anomenat Isidor, que havia observat tota la vida com el vent movia les rames, les fulles i fins les veles dels barcos al lluny, va tenir una idea.</p>
+<p>Va construir una estructura de fusta amb quatre aspes grans de tela. Quan el vent les movia, un eix central girava i a baix d'ell hi havia les pedres de moldre. Al principi els veïns se'n van riure. «El vent no fa farina!»</p>
+<p>El primer dia de vent fort, el molí d'Isidor va girar i va moldre el doble de gra que qualsevol home en una jornada. Els veïns van quedar boqueoberts. Al cap d'uns anys, molins de vent sorgien per tota la plana.</p>
+<p>Isidor sempre va dir: «No ho vaig inventar jo. El vent ja movia coses des del principi. Jo només vaig aprendre a escoltar el que la natura em deia.»</p>`
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// APP LOGIC
+// ═══════════════════════════════════════════════════════
+const temes = ['Tots', ...new Set(contes.map(c => c.tema))];
+let temaActiu = 'Tots';
+let searchQuery = '';
+
+function filteredContes() {
+  return contes.filter(c => {
+    const matchTema = temaActiu === 'Tots' || c.tema === temaActiu;
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q || c.title.toLowerCase().includes(q)
+      || c.resum.toLowerCase().includes(q)
+      || c.tags.some(t => t.toLowerCase().includes(q))
+      || c.tema.toLowerCase().includes(q);
+    return matchTema && matchSearch;
+  });
+}
+
+function renderCats() {
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = temes.map(t => `
+    <button class="cat-pill ${t===temaActiu?'active':''}" data-tema="${t}">${t}</button>
+  `).join('');
+  bar.querySelectorAll('.cat-pill').forEach(btn => {
+    btn.onclick = () => { temaActiu = btn.dataset.tema; renderAll(); };
+  });
+}
+
+const temaEmojis = {Tots:'📚',Aventura:'⚔️',Màgia:'✨',Valors:'💛',Natura:'🌿',Llegenda:'🏔️',Enginy:'💡',Imaginació:'🎨',Son:'💤'};
+
+function renderGrid() {
+  const list = filteredContes();
+  const grid = document.getElementById('grid');
+  const stats = document.getElementById('stats');
+  stats.textContent = `${list.length} conte${list.length!==1?'s':''} trobat${list.length!==1?'s':''}`;
+  if (!list.length) {
+    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1"><span class="big">🔍</span>No hem trobat cap conte per «${searchQuery}»</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(c => `
+    <div class="card" data-id="${c.id}">
+      <span class="card-emoji">${c.emoji}</span>
+      <h3>${c.title}</h3>
+      <div class="card-meta">
+        <span class="badge theme">${temaEmojis[c.tema]||'📖'} ${c.tema}</span>
+        <span class="badge">~3 min</span>
+      </div>
+      <p>${c.resum}</p>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.card').forEach(card => {
+    card.onclick = () => openConte(+card.dataset.id);
+  });
+}
+
+function renderAll() {
+  renderCats();
+  renderGrid();
+}
+
+// ─── Modal / Reader ───
+let currentConte = null;
+let synth = window.speechSynthesis;
+let utterance = null;
+let words = [];
+let wordIndex = 0;
+
+function openConte(id) {
+  currentConte = contes.find(c => c.id === id);
+  if (!currentConte) return;
+  document.getElementById('mEmoji').textContent = currentConte.emoji;
+  document.getElementById('mTitle').textContent = currentConte.title;
+  document.getElementById('mBadges').innerHTML = `
+    <span class="badge theme">${temaEmojis[currentConte.tema]||'📖'} ${currentConte.tema}</span>
+    ${currentConte.tags.map(t=>`<span class="badge">${t}</span>`).join('')}
+  `;
+  document.getElementById('storyText').innerHTML = currentConte.text;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('overlay').classList.add('open');
+  stopSpeech();
+}
+
+function closeConte() {
+  document.getElementById('overlay').classList.remove('open');
+  stopSpeech();
+}
+
+function stopSpeech() {
+  if (synth) synth.cancel();
+  utterance = null;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('btnPlay').textContent = '▶ Escoltar';
+}
+
+document.getElementById('btnClose').onclick = closeConte;
+document.getElementById('overlay').onclick = (e) => { if(e.target===e.currentTarget) closeConte(); };
+
+document.getElementById('btnPlay').onclick = () => {
+  if (!currentConte) return;
+  if (synth.speaking && !synth.paused) {
+    synth.pause();
+    document.getElementById('btnPlay').textContent = '▶ Continuar';
+    return;
+  }
+  if (synth.paused) {
+    synth.resume();
+    document.getElementById('btnPlay').textContent = '⏸ Pausa';
+    return;
+  }
+  // Start
+  const text = document.getElementById('storyText').innerText;
+  utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ca-ES';
+  utterance.rate = parseFloat(document.getElementById('speedSel').value);
+
+  const totalChars = text.length;
+  utterance.onboundary = (e) => {
+    if (e.name === 'word') {
+      const pct = Math.min(100, (e.charIndex / totalChars) * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+    }
+  };
+  utterance.onend = () => {
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('btnPlay').textContent = '▶ Escoltar';
+  };
+  utterance.onerror = () => {
+    document.getElementById('btnPlay').textContent = '▶ Escoltar';
+  };
+
+  synth.speak(utterance);
+  document.getElementById('btnPlay').textContent = '⏸ Pausa';
+};
+
+document.getElementById('btnStop').onclick = stopSpeech;
+
+document.getElementById('speedSel').onchange = () => {
+  if (synth.speaking) {
+    stopSpeech();
+    document.getElementById('btnPlay').click();
+  }
+};
+
+// Search
+document.getElementById('searchInput').oninput = (e) => {
+  searchQuery = e.target.value;
+  renderGrid();
+};
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeConte();
+});
+
+renderAll();
+</script>
+</body>
+</html>
