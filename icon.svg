@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0d0a1a" rx="80"/>
+  <!-- Crescent moon -->
+  <circle cx="256" cy="170" r="90" fill="#e8b84b"/>
+  <circle cx="300" cy="140" r="74" fill="#0d0a1a"/>
+  <!-- Stars -->
+  <circle cx="140" cy="155" r="5" fill="#e8b84b" opacity="0.8"/>
+  <circle cx="370" cy="200" r="4" fill="#e8b84b" opacity="0.6"/>
+  <circle cx="165" cy="230" r="3" fill="#e8b84b" opacity="0.5"/>
+  <circle cx="395" cy="140" r="3" fill="#e8b84b" opacity="0.4"/>
+  <!-- Open book -->
+  <rect x="110" y="310" width="292" height="160" rx="10" fill="#16112b" stroke="#e8b84b" stroke-width="5"/>
+  <rect x="110" y="310" width="146" height="160" rx="10" fill="#1e1738" stroke="#e8b84b" stroke-width="3"/>
+  <line x1="256" y1="315" x2="256" y2="465" stroke="#e8b84b" stroke-width="5"/>
+  <!-- Left page lines -->
+  <line x1="135" y1="348" x2="235" y2="348" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="135" y1="372" x2="235" y2="372" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="135" y1="396" x2="235" y2="396" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="135" y1="420" x2="200" y2="420" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <!-- Right page lines -->
+  <line x1="277" y1="348" x2="377" y2="348" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="277" y1="372" x2="377" y2="372" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="277" y1="396" x2="377" y2="396" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+  <line x1="277" y1="420" x2="340" y2="420" stroke="#e8b84b" stroke-width="3" opacity="0.4"/>
+</svg>

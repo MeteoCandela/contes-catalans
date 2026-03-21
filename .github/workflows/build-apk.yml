@@ -58,7 +58,10 @@ jobs:
           EOF
 
       - name: Copy web app to Android assets
-        run: cp index.html android/app/src/main/assets/index.html
+        run: |
+          cp index.html android/app/src/main/assets/index.html
+          cp icon-192.png android/app/src/main/assets/icon-192.png
+          cp icon-512.png android/app/src/main/assets/icon-512.png
 
       - name: Download Gradle wrapper JAR
         run: |
