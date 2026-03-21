@@ -74,6 +74,12 @@
   .audio-bar.collapsed .audio-controls{display:none;}
   .btn-audio-toggle{background:none;border:1px solid var(--surface3);color:var(--text-muted);border-radius:50%;width:28px;height:28px;font-size:.75rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .25s;}
   .audio-bar.collapsed .btn-audio-toggle{transform:rotate(180deg);}
+  .versio-toggle{display:flex;gap:0;flex-shrink:0;}
+  .versio-btn{background:var(--surface3);border:1px solid #ffffff22;color:var(--text-dim);padding:.4rem .85rem;font-family:'Lora',serif;font-weight:600;font-size:.8rem;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;}
+  .versio-btn:first-child{border-radius:50px 0 0 50px;border-right:none;}
+  .versio-btn:last-child{border-radius:0 50px 50px 0;}
+  .versio-btn.active{background:linear-gradient(135deg,#a07c2a,#e8b84b);color:#1a1200;border-color:var(--gold);}
+  .versio-btn:disabled{opacity:.35;cursor:not-allowed;}
   .pwa-banner{position:fixed;bottom:0;left:0;right:0;z-index:300;background:linear-gradient(135deg,#1e1738,#261e45);border-top:1.5px solid var(--gold-dim);padding:.9rem 1.2rem;display:flex;align-items:center;gap:.8rem;box-shadow:0 -6px 24px #00000070;animation:slideUp .3s ease;}
   @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
   .pwa-banner.hidden{display:none;}
@@ -114,6 +120,10 @@
     <div class="audio-bar" id="audioBar">
       <div class="audio-top">
         <button class="audio-btn" id="btnPlay">▶ Escoltar</button>
+        <div class="versio-toggle" id="versioToggle">
+          <button class="versio-btn active" id="btnCurt">📖 Curt</button>
+          <button class="versio-btn" id="btnLlarg" disabled>📜 Llarg</button>
+        </div>
         <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
         <button class="btn-audio-toggle" id="btnAudioToggle" title="Minimitzar">▲</button>
       </div>
@@ -2773,7 +2783,7 @@ function renderGrid(){
   document.getElementById('stats').textContent=`${list.length} conte${list.length!==1?'s':''} trobat${list.length!==1?'s':''}`;
   const grid=document.getElementById('grid');
   if(!list.length){grid.innerHTML='<div class="no-results"><span class="big">🔍</span>No hem trobat cap conte amb aquesta cerca</div>';return;}
-  grid.innerHTML=list.map(c=>`<div class="card" data-id="${c.id}"><span class="card-emoji">${c.emoji}</span><h3>${c.title}</h3><div class="card-meta"><span class="badge theme">${temaEmojis[c.tema]||'📖'} ${c.tema}</span><span class="badge">~4 min</span></div><p>${c.resum}</p></div>`).join('');
+  grid.innerHTML=list.map(c=>`<div class="card" data-id="${c.id}"><span class="card-emoji">${c.emoji}</span><h3>${c.title}</h3><div class="card-meta"><span class="badge theme">${temaEmojis[c.tema]||'📖'} ${c.tema}</span><span class="badge">${c.textLlarg?'4–10 min':'~4 min'}</span></div><p>${c.resum}</p></div>`).join('');
   grid.querySelectorAll('.card').forEach(card=>{card.onclick=()=>openConte(+card.dataset.id);});
 }
 
@@ -2781,6 +2791,7 @@ function renderAll(){renderCats();renderGrid();}
 
 let currentConte=null;
 let lastOpenedId=null;
+let currentVersion='curt';
 const synth=window.speechSynthesis;
 let utterance=null;
 let keepAliveTimer=null;
@@ -2794,15 +2805,26 @@ function getBestVoice(){
     ||null;
 }
 
+function applyVersion(){
+  if(!currentConte)return;
+  const hasLlarg=!!currentConte.textLlarg;
+  document.getElementById('btnCurt').classList.toggle('active',currentVersion==='curt');
+  document.getElementById('btnLlarg').classList.toggle('active',currentVersion==='llarg');
+  document.getElementById('btnLlarg').disabled=!hasLlarg;
+  const textToShow=(currentVersion==='llarg'&&hasLlarg)?currentConte.textLlarg:currentConte.text;
+  document.getElementById('storyText').innerHTML=textToShow;
+}
+
 function openConte(id){
   const isSame=(id===lastOpenedId);
   lastOpenedId=id;
   currentConte=contes.find(c=>c.id===id);
   if(!currentConte)return;
+  if(!isSame)currentVersion='curt';
   document.getElementById('mEmoji').textContent=currentConte.emoji;
   document.getElementById('mTitle').textContent=currentConte.title;
   document.getElementById('mBadges').innerHTML=`<span class="badge theme">${temaEmojis[currentConte.tema]||'📖'} ${currentConte.tema}</span>${currentConte.tags.map(t=>`<span class="badge">${t}</span>`).join('')}`;
-  document.getElementById('storyText').innerHTML=currentConte.text;
+  applyVersion();
   document.getElementById('progressFill').style.width='0%';
   document.getElementById('overlay').classList.add('open');
   if(!isSame){document.querySelector('.modal-body').scrollTop=0;}
@@ -2819,6 +2841,14 @@ function stopSpeech(){
   document.getElementById('btnPlay').textContent='▶ Escoltar';
 }
 
+document.getElementById('btnCurt').onclick=()=>{
+  if(currentVersion==='curt')return;
+  currentVersion='curt';stopSpeech();applyVersion();document.querySelector('.modal-body').scrollTop=0;
+};
+document.getElementById('btnLlarg').onclick=()=>{
+  if(!currentConte||!currentConte.textLlarg||currentVersion==='llarg')return;
+  currentVersion='llarg';stopSpeech();applyVersion();document.querySelector('.modal-body').scrollTop=0;
+};
 document.getElementById('btnClose').onclick=closeConte;
 document.getElementById('overlay').onclick=(e)=>{if(e.target===e.currentTarget)closeConte();};
 
