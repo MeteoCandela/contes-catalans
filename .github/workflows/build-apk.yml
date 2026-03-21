@@ -21,6 +21,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
+
       - name: Generate launcher icons
         run: |
           python3 - <<'EOF'
@@ -63,14 +68,10 @@ jobs:
           cp icon-192.png android/app/src/main/assets/icon-192.png
           cp icon-512.png android/app/src/main/assets/icon-512.png
 
-      - name: Download Gradle wrapper JAR
+      - name: Generate Gradle wrapper
         run: |
-          mkdir -p android/gradle/wrapper
-          curl -Lo android/gradle/wrapper/gradle-wrapper.jar \
-            https://github.com/gradle/gradle/raw/v8.5.0/gradle/wrapper/gradle-wrapper.jar
-
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
+          chmod +x android/gradlew
+          cd android && gradle wrapper --gradle-version 8.5 --distribution-type bin
 
       - name: Build Debug APK
         run: cd android && ./gradlew assembleDebug --no-daemon

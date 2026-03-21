@@ -2780,11 +2780,23 @@ function renderGrid(){
 function renderAll(){renderCats();renderGrid();}
 
 let currentConte=null;
+let lastOpenedId=null;
 const synth=window.speechSynthesis;
 let utterance=null;
 let keepAliveTimer=null;
 
+function getBestVoice(){
+  const voices=synth.getVoices();
+  return voices.find(v=>v.lang==='ca-ES')
+    ||voices.find(v=>v.lang.startsWith('ca'))
+    ||voices.find(v=>v.lang==='es-ES')
+    ||voices.find(v=>v.lang.startsWith('es'))
+    ||null;
+}
+
 function openConte(id){
+  const isSame=(id===lastOpenedId);
+  lastOpenedId=id;
   currentConte=contes.find(c=>c.id===id);
   if(!currentConte)return;
   document.getElementById('mEmoji').textContent=currentConte.emoji;
@@ -2793,6 +2805,7 @@ function openConte(id){
   document.getElementById('storyText').innerHTML=currentConte.text;
   document.getElementById('progressFill').style.width='0%';
   document.getElementById('overlay').classList.add('open');
+  if(!isSame){document.querySelector('.modal-body').scrollTop=0;}
   stopSpeech();
 }
 
@@ -2816,6 +2829,8 @@ document.getElementById('btnPlay').onclick=()=>{
   const text=document.getElementById('storyText').innerText;
   utterance=new SpeechSynthesisUtterance(text);
   utterance.lang='ca-ES';
+  const bestVoice=getBestVoice();
+  if(bestVoice)utterance.voice=bestVoice;
   utterance.rate=parseFloat(document.getElementById('speedSel').value);
   const totalChars=text.length;
   utterance.onboundary=(e)=>{if(e.name==='word'){document.getElementById('progressFill').style.width=Math.min(100,(e.charIndex/totalChars)*100)+'%';}};
@@ -2824,7 +2839,11 @@ document.getElementById('btnPlay').onclick=()=>{
     document.getElementById('progressFill').style.width='100%';
     document.getElementById('btnPlay').textContent='▶ Escoltar';
   };
-  utterance.onerror=()=>{stopSpeech();};
+  utterance.onerror=(e)=>{
+    if(e.error==='interrupted'||e.error==='canceled')return;
+    stopSpeech();
+    document.getElementById('btnPlay').textContent='⚠ Error de veu';
+  };
   synth.speak(utterance);
   document.getElementById('btnPlay').textContent='⏸ Pausa';
   // Workaround bug Chrome: la síntesi es talla als ~15s
@@ -2835,7 +2854,7 @@ document.getElementById('btnPlay').onclick=()=>{
 };
 
 document.getElementById('btnStop').onclick=stopSpeech;
-document.getElementById('speedSel').onchange=()=>{if(synth.speaking){stopSpeech();document.getElementById('btnPlay').click();}};
+document.getElementById('speedSel').onchange=()=>{if(synth.speaking){stopSpeech();document.getElementById('btnPlay').onclick();}};
 document.getElementById('searchInput').oninput=(e)=>{searchQuery=e.target.value;renderGrid();};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeConte();});
 
