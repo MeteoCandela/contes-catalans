@@ -1,0 +1,96 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main, master]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Generate launcher icons
+        run: |
+          python3 - <<'EOF'
+          import zlib, struct, os
+
+          def make_png(width, height, r, g, b):
+              def chunk(t, d):
+                  c = t + d
+                  return struct.pack('>I', len(d)) + c + struct.pack('>I', zlib.crc32(c) & 0xffffffff)
+              sig = b'\x89PNG\r\n\x1a\n'
+              ihdr = chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0))
+              raw = b''.join(b'\x00' + bytes([r, g, b] * width) for _ in range(height))
+              idat = chunk(b'IDAT', zlib.compress(raw))
+              iend = chunk(b'IEND', b'')
+              return sig + ihdr + idat + iend
+
+          densities = {
+              'mipmap-mdpi':    48,
+              'mipmap-hdpi':    72,
+              'mipmap-xhdpi':   96,
+              'mipmap-xxhdpi':  144,
+              'mipmap-xxxhdpi': 192,
+          }
+
+          for density, size in densities.items():
+              path = f'android/app/src/main/res/{density}'
+              os.makedirs(path, exist_ok=True)
+              png = make_png(size, size, 26, 26, 46)  # dark blue matching app theme
+              with open(f'{path}/ic_launcher.png', 'wb') as f:
+                  f.write(png)
+              with open(f'{path}/ic_launcher_round.png', 'wb') as f:
+                  f.write(png)
+
+          print("Icons generated successfully")
+          EOF
+
+      - name: Copy web app to Android assets
+        run: cp index.html android/app/src/main/assets/index.html
+
+      - name: Download Gradle wrapper JAR
+        run: |
+          mkdir -p android/gradle/wrapper
+          curl -Lo android/gradle/wrapper/gradle-wrapper.jar \
+            https://github.com/gradle/gradle/raw/v8.5.0/gradle/wrapper/gradle-wrapper.jar
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build Debug APK
+        run: cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: Rename APK
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk contes-catalans.apk
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: contes-catalans-apk
+          path: contes-catalans.apk
+          retention-days: 30
+
+      - name: Create Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: contes-catalans.apk
+          name: "Contes Catalans ${{ github.ref_name }}"
+          body: |
+            ## Contes Catalans - App Android
+
+            Descarrega la APK i instal·la-la al teu dispositiu Android.
+
+            > **Nota:** Cal activar "Instal·lació d'orígens desconeguts" a la configuració del dispositiu.
