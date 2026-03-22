@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Contes Catalans · Bona Nit</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{--bg:#0d0a1a;--surface:#16112b;--surface2:#1e1738;--surface3:#261e45;--gold:#e8b84b;--gold-light:#f5d07a;--gold-dim:#a07c2a;--text:#f0e8d8;--text-dim:#b8a88a;--text-muted:#7a6a5a;--accent:#c46b3a;--accent2:#7b5ea7;--radius:16px;}
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -65,6 +65,9 @@
   .story-text{font-size:1.08rem;line-height:2;color:var(--text);}
   .story-text p{margin-bottom:1.2em;}
   .story-text p:first-child::first-letter{font-family:'Playfair Display',serif;font-size:3.5em;float:left;line-height:.8;margin:.05em .12em 0 0;color:var(--gold);text-shadow:0 0 20px #e8b84b55;}
+  .story-text-infantil{font-family:'Atkinson Hyperlegible',Arial,sans-serif;font-size:1.35rem;line-height:2.2;color:var(--text);}
+  .story-text-infantil p{margin-bottom:1em;}
+  .story-text-infantil p:first-child::first-letter{font-size:3em;float:left;line-height:.85;margin:.05em .12em 0 0;color:var(--gold);}
   .no-results{text-align:center;padding:4rem 1rem;color:var(--text-muted);font-style:italic;grid-column:1/-1;}
   .no-results .big{font-size:3rem;display:block;margin-bottom:1rem;}
   @media(max-width:600px){.modal-head,.modal-body{padding:1rem;}.audio-bar{padding:.6rem 1rem;}.grid{grid-template-columns:1fr 1fr;}}
@@ -78,6 +81,7 @@
   .versio-btn{background:var(--surface3);border:1px solid #ffffff22;color:var(--text-dim);padding:.4rem .85rem;font-family:'Lora',serif;font-weight:600;font-size:.8rem;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;}
   .versio-btn:first-child{border-radius:50px 0 0 50px;border-right:none;}
   .versio-btn:last-child{border-radius:0 50px 50px 0;}
+  .versio-btn:not(:first-child):not(:last-child){border-right:none;}
   .versio-btn.active{background:linear-gradient(135deg,#a07c2a,#e8b84b);color:#1a1200;border-color:var(--gold);}
   .versio-btn:disabled{opacity:.35;cursor:not-allowed;}
   .pwa-banner{position:fixed;bottom:0;left:0;right:0;z-index:300;background:linear-gradient(135deg,#1e1738,#261e45);border-top:1.5px solid var(--gold-dim);padding:.9rem 1.2rem;display:flex;align-items:center;gap:.8rem;box-shadow:0 -6px 24px #00000070;animation:slideUp .3s ease;}
@@ -123,6 +127,7 @@
         <div class="versio-toggle" id="versioToggle">
           <button class="versio-btn active" id="btnCurt">📖 Curt</button>
           <button class="versio-btn" id="btnLlarg" disabled>📜 Llarg</button>
+          <button class="versio-btn" id="btnInfantil">🌟 Petits</button>
         </div>
         <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
         <button class="btn-audio-toggle" id="btnAudioToggle" title="Minimitzar">▲</button>
@@ -4832,11 +4837,18 @@ function getBestVoice(){
 function applyVersion(){
   if(!currentConte)return;
   const hasLlarg=!!currentConte.textLlarg;
+  const hasInfantil=!!currentConte.textInfantil;
   document.getElementById('btnCurt').classList.toggle('active',currentVersion==='curt');
   document.getElementById('btnLlarg').classList.toggle('active',currentVersion==='llarg');
+  document.getElementById('btnInfantil').classList.toggle('active',currentVersion==='infantil');
   document.getElementById('btnLlarg').disabled=!hasLlarg;
-  const textToShow=(currentVersion==='llarg'&&hasLlarg)?currentConte.textLlarg:currentConte.text;
-  document.getElementById('storyText').innerHTML=textToShow;
+  document.getElementById('btnInfantil').disabled=!hasInfantil;
+  let textToShow=currentConte.text;
+  if(currentVersion==='llarg'&&hasLlarg)textToShow=currentConte.textLlarg;
+  else if(currentVersion==='infantil'&&hasInfantil)textToShow=currentConte.textInfantil;
+  const el=document.getElementById('storyText');
+  el.className=(currentVersion==='infantil')?'story-text-infantil':'story-text';
+  el.innerHTML=textToShow;
 }
 
 function openConte(id){
@@ -4872,6 +4884,10 @@ document.getElementById('btnCurt').onclick=()=>{
 document.getElementById('btnLlarg').onclick=()=>{
   if(!currentConte||!currentConte.textLlarg||currentVersion==='llarg')return;
   currentVersion='llarg';stopSpeech();applyVersion();document.querySelector('.modal-body').scrollTop=0;
+};
+document.getElementById('btnInfantil').onclick=()=>{
+  if(!currentConte||!currentConte.textInfantil||currentVersion==='infantil')return;
+  currentVersion='infantil';stopSpeech();applyVersion();document.querySelector('.modal-body').scrollTop=0;
 };
 document.getElementById('btnClose').onclick=closeConte;
 document.getElementById('overlay').onclick=(e)=>{if(e.target===e.currentTarget)closeConte();};
